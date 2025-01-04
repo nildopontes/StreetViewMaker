@@ -42,13 +42,14 @@ function getUploadURL(token){
    const url = `https://streetviewpublish.googleapis.com/v1/photo:startUpload?key=${API_KEY}`;
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
       xhr.open('POST', url, true);
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.reponseText);
-               resolve();
+               console.log(xhr.reponse.uploadUrl);
+               resolve(xhr.reponse.uploadUrl);
             }else{
                reject(`Error: status code ${xhr.status}.`);
             }
@@ -76,4 +77,16 @@ function sendImageData(token, data, pathResumable){
       }
       xhr.send(data);
    });
+}
+
+function sendMetadata(token){
+   
+}
+
+function updateMetadata(token){
+   
+}
+
+function deleteImage(token){
+   
 }
