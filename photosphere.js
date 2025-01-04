@@ -43,12 +43,32 @@ function getUploadURL(token){
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.open('POST', url, true);
-      xhr.setRequestHeader('Content-Length', '0');
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
                console.log(xhr.reponseText);
+               resolve();
+            }else{
+               reject(`Error: status code ${xhr.status}.`);
+            }
+         }
+      }
+      xhr.send();
+   });
+}
+
+function sendImageData(token, data, pathResumable){
+   return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+      xhr.open('POST', pathResumable, true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.onreadystatechange = function() {
+         if(xhr.readyState == 4){
+            if(xhr.status >= 200 && xhr.status <= 206){
+               console.log(xhr.responseText);
+               resolve(xhr.responseText);
             }else{
                reject(`Error: status code ${xhr.status}.`);
             }
@@ -56,8 +76,4 @@ function getUploadURL(token){
       }
       xhr.send(data);
    });
-}
-
-function sendImageData(){
-   
 }
