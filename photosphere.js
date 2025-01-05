@@ -48,8 +48,8 @@ function getUploadURL(token){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.reponse.uploadUrl);
-               resolve(xhr.reponse.uploadUrl);
+               console.log(xhr.response.uploadUrl);
+               resolve(xhr.response.uploadUrl);
             }else{
                reject(`Error: status code ${xhr.status}.`);
             }
@@ -150,8 +150,8 @@ function deletePhoto(token, photoId){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.reponse);
-               resolve(xhr.reponse);
+               console.log(xhr.response);
+               resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
             }
@@ -175,8 +175,8 @@ function listPhotos(token){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.reponse);
-               resolve(xhr.reponse);
+               console.log(xhr.response);
+               resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
             }
