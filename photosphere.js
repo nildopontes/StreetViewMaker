@@ -59,17 +59,17 @@ function getUploadURL(token){
    });
 }
 
-function sendImageData(token, data, pathResumable){
+function sendImageData(token, data, uploadUrl){
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
-      xhr.open('POST', pathResumable, true);
+      xhr.open('POST', uploadUrl, true);
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.responseText);
-               resolve(xhr.responseText);
+               console.log(xhr.response);
+               resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
             }
@@ -79,14 +79,109 @@ function sendImageData(token, data, pathResumable){
    });
 }
 
-function sendMetadata(token){
+function sendMetadata(token, uploadUrl, latitude, longitude){
+   const data = JSON.stringify({
+      "uploadReference":{
+         "uploadUrl": uploadUrl
+      },
+      "pose":{
+         "latLngPair":{
+            "latitude": latitude,
+            "longitude": longitude
+         }
+      }
+   });
+   return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+      xhr.open('POST', uploadUrl, true);
+      xhr.setRequestHeader('Content-type', 'application/json');
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.onreadystatechange = function() {
+         if(xhr.readyState == 4){
+            if(xhr.status >= 200 && xhr.status <= 206){
+               console.log(xhr.response);
+               resolve(xhr.response);
+            }else{
+               reject(`Error: status code ${xhr.status}.`);
+            }
+         }
+      }
+      xhr.send(data);
+   });
+}
+
+function updateConnections(token, photoId, targetPhotoId){
+   const data = JSON.stringify({
+      "connections": [{
+         "target": {
+            "id": targetPhotoId
+         }
+      }]
+   });
+   return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      let url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}&updateMask=connections`;
+      xhr.responseType = 'json';
+      xhr.open('POST', uploadUrl, true);
+      xhr.setRequestHeader('Content-type', 'application/json');
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.onreadystatechange = function() {
+         if(xhr.readyState == 4){
+            if(xhr.status >= 200 && xhr.status <= 206){
+               console.log(xhr.response);
+               resolve(xhr.response);
+            }else{
+               reject(`Error: status code ${xhr.status}.`);
+            }
+         }
+      }
+      xhr.send(data);
+   });
+}
+
+function deletePhoto(token, photoId){
+   const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}`;
+   return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+      xhr.open('DELETE', url, true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.onreadystatechange = function() {
+         if(xhr.readyState == 4){
+            if(xhr.status >= 200 && xhr.status <= 206){
+               console.log(xhr.reponse);
+               resolve(xhr.reponse);
+            }else{
+               reject(`Error: status code ${xhr.status}.`);
+            }
+         }
+      }
+      xhr.send();
+   });
+}
+
+function getPhoto(token){
    
 }
 
-function updateMetadata(token){
-   
-}
-
-function deleteImage(token){
-   
+function listPhotos(token){
+   const url = `https://streetviewpublish.googleapis.com/v1/photos?key=${API_KEY}`;
+   return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+      xhr.open('GET', url, true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.onreadystatechange = function() {
+         if(xhr.readyState == 4){
+            if(xhr.status >= 200 && xhr.status <= 206){
+               console.log(xhr.reponse);
+               resolve(xhr.reponse);
+            }else{
+               reject(`Error: status code ${xhr.status}.`);
+            }
+         }
+      }
+      xhr.send();
+   });
 }
