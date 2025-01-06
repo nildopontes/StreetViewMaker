@@ -62,10 +62,14 @@ response:${xhr.response.uploadUrl}`);
    });
 }
 
+/*
+Envia uma foto para o Street View por meio da URL de upload. Somente o arquivo, sem metadados.
+@param {String} token - o token de acesso OAuth 2.0
+@param {String} uploadUrl - URL retornada pelo método getUploadURL()
+*/
 function sendImageData(token, uploadUrl){
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
       xhr.open('POST', uploadUrl, true);
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
@@ -74,7 +78,7 @@ function sendImageData(token, uploadUrl){
                console.log(`f:sendImageData()
 status:${xhr.status}
 response:${xhr.response}`);
-               resolve(xhr.response);
+               resolve(true); // Em caso de sucesso a resposta é vazia
             }else{
                reject(`Error: status code ${xhr.status}.`);
             }
@@ -84,6 +88,13 @@ response:${xhr.response}`);
    });
 }
 
+/*
+Envia os metadados de uma foto no Street View para concluir o upload.
+@param {String} token - o token de acesso OAuth 2.0
+@param {String} uploadUrl - ID de uma foto
+@param {String} latitude - Latitude do local onde a foto foi registrada  no formato decimal
+@param {String} longitude - Longitude do local onde a foto foi registrada no formato decimal
+*/
 function sendMetadata(token, uploadUrl, latitude, longitude){
    const data = JSON.stringify({
       "uploadReference":{
@@ -119,6 +130,12 @@ response:${xhr.response}`);
    });
 }
 
+/*
+Atualiza as conexões de uma foto no Street View.
+@param {String} token - o token de acesso OAuth 2.0
+@param {String} photoId - ID de uma foto
+@param {String} targetPhotoId - ID de uma foto para onde apontar
+*/
 function updateConnections(token, photoId, targetPhotoId){
    const data = JSON.stringify({
       "connections": [{
@@ -150,6 +167,11 @@ response:${xhr.response}`);
    });
 }
 
+/*
+Deleta uma foto no Street View.
+@param {String} token - o token de acesso OAuth 2.0
+@param {String} photoId - ID de uma foto
+*/
 function deletePhoto(token, photoId){
    const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}`;
    return new Promise((resolve, reject) => {
@@ -163,7 +185,7 @@ function deletePhoto(token, photoId){
                console.log(`f:deletePhoto()
 status:${xhr.status}
 response:${xhr.response}`);
-               resolve(xhr.response);
+               resolve(true); // Em caso de sucesso a resposta é um JSON vazio
             }else{
                reject(`Error: status code ${xhr.status}.`);
             }
@@ -173,10 +195,16 @@ response:${xhr.response}`);
    });
 }
 
+/*
+Recupera detalhes sobre uma foto no Street View.
+@param {String} token - o token de acesso OAuth 2.0
+@param {String} photoId - ID de uma foto
+*/
 function getPhoto(token, photoId){
    const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}`;
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
       xhr.open('GET', url, true);
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
@@ -196,6 +224,10 @@ response:${xhr.response}`);
    });
 }
 
+/*
+Recupera uma lista de fotos no Street View.
+@param {String} token - o token de acesso OAuth 2.0
+*/
 function listPhotos(token){
    const url = `https://streetviewpublish.googleapis.com/v1/photos?key=${API_KEY}`;
    return new Promise((resolve, reject) => {
