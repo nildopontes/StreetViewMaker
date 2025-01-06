@@ -62,7 +62,7 @@ response:${xhr.response.uploadUrl}`);
    });
 }
 
-function sendImageData(token, data, uploadUrl){
+function sendImageData(token, uploadUrl){
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
@@ -80,7 +80,7 @@ response:${xhr.response}`);
             }
          }
       }
-      xhr.send(data);
+      xhr.send(document.getElementById('photo').files[0]);
    });
 }
 
@@ -223,11 +223,13 @@ response:${xhr.response}`);
 function sendPhotosphere(){
    newToken().then(t => {
       getUploadURL(t).then(uploadUrl => {
-         document.getElementById('photo').files[0].arrayBuffer().then(data => {
-            sendImageData(t, new Uint8Array(data), uploadUrl).then(() => {
-               sendMetadata(t, uploadUrl, document.getElementById('latitude').value, document.getElementById('longitude').value);
-            });
+         sendImageData(t, uploadUrl).then(() => {
+            sendMetadata(t, uploadUrl, document.getElementById('latitude').value, document.getElementById('longitude').value);
          });
       });
    });
+}
+
+function listP(){
+   
 }
