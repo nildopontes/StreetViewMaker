@@ -26,6 +26,7 @@ Gera um novo token de acesso OAuth ou retorna o atual caso ainda esteja válido
 function newToken(){
    return  new Promise((resolve, reject) => {
       if(sessionStorage.getItem('secureToken') !== null && parseInt(Date.now()/1000, 10) < parseInt(sessionStorage.getItem('expireToken'), 10)){
+         console.log(access_token);
          resolve(sessionStorage.getItem('secureToken'));
       }else{
          client.requestAccessToken();
@@ -129,7 +130,7 @@ function updateConnections(token, photoId, targetPhotoId){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.response);
+               console.log(`f:updateConnections()-status:${xhr.status}-response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -150,7 +151,7 @@ function deletePhoto(token, photoId){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.response);
+               console.log(`f:deletePhoto()-status:${xhr.status}-response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -161,8 +162,25 @@ function deletePhoto(token, photoId){
    });
 }
 
-function getPhoto(token){
-   
+function getPhoto(token, photoId){
+   const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}`;
+   return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.onreadystatechange = function() {
+         if(xhr.readyState == 4){
+            if(xhr.status >= 200 && xhr.status <= 206){
+               console.log(xhr.response);
+               console.log(`f:getPhoto()-status:${xhr.status}-response:${xhr.response}`);
+               resolve(xhr.response);
+            }else{
+               reject(`Error: status code ${xhr.status}.`);
+            }
+         }
+      }
+      xhr.send();
+   });
 }
 
 function listPhotos(token){
@@ -176,6 +194,7 @@ function listPhotos(token){
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
                console.log(xhr.response);
+               console.log(`f:listPhotos()-status:${xhr.status}-response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
