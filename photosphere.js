@@ -98,8 +98,9 @@ function sendMetadata(token, uploadUrl, latitude, longitude){
    });
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
+      let url = `https://streetviewpublish.googleapis.com/v1/photo?key=${API_KEY}`;
       xhr.responseType = 'json';
-      xhr.open('POST', uploadUrl, true);
+      xhr.open('POST', url, true);
       xhr.setRequestHeader('Content-type', 'application/json');
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
