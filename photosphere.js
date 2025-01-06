@@ -49,7 +49,9 @@ function getUploadURL(token){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:getUploadURL()-status:${xhr.status}-response:${xhr.response.uploadUrl}`);
+               console.log(`f:getUploadURL()
+status:${xhr.status}
+response:${xhr.response.uploadUrl}`);
                resolve(xhr.response.uploadUrl);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -69,7 +71,9 @@ function sendImageData(token, data, uploadUrl){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:sendImageData()-status:${xhr.status}-response:${xhr.response}`);
+               console.log(`f:sendImageData()
+status:${xhr.status}
+response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -101,7 +105,9 @@ function sendMetadata(token, uploadUrl, latitude, longitude){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:sendMetadata()-status:${xhr.status}-response:${xhr.response}`);
+               console.log(`f:sendMetadata()
+status:${xhr.status}
+response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -130,7 +136,9 @@ function updateConnections(token, photoId, targetPhotoId){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:updateConnections()-status:${xhr.status}-response:${xhr.response}`);
+               console.log(`f:updateConnections()
+status:${xhr.status}
+response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -151,7 +159,9 @@ function deletePhoto(token, photoId){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:deletePhoto()-status:${xhr.status}-response:${xhr.response}`);
+               console.log(`f:deletePhoto()
+status:${xhr.status}
+response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -172,7 +182,9 @@ function getPhoto(token, photoId){
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
                console.log(xhr.response);
-               console.log(`f:getPhoto()-status:${xhr.status}-response:${xhr.response}`);
+               console.log(`f:getPhoto()
+status:${xhr.status}
+response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -194,7 +206,9 @@ function listPhotos(token){
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
                console.log(xhr.response);
-               console.log(`f:listPhotos()-status:${xhr.status}-response:${xhr.response}`);
+               console.log(`f:listPhotos()
+status:${xhr.status}
+response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -206,6 +220,12 @@ function listPhotos(token){
 }
 function sendPhotosphere(){
    newToken().then(t => {
-      getUploadURL(t);
+      getUploadURL(t).then(uploadUrl => {
+         document.getElementById('photo').files[0].arrayBuffer().then(data => {
+            sendImageData(t, data, uploadUrl).then(() => {
+               sendMetadata(t, uploadUrl, document.getElementById('latitude').value, document.getElementById('longitude').value);
+            });
+         });
+      });
    });
 }
