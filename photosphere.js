@@ -48,7 +48,7 @@ function getUploadURL(token){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.response.uploadUrl);
+               console.log(`f:getUploadURL()-status:${xhr.status}-response:${xhr.response.uploadUrl}`);
                resolve(xhr.response.uploadUrl);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -68,7 +68,7 @@ function sendImageData(token, data, uploadUrl){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.response);
+               console.log(`f:sendImageData()-status:${xhr.status}-response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -100,7 +100,7 @@ function sendMetadata(token, uploadUrl, latitude, longitude){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.response);
+               console.log(`f:sendMetadata()-status:${xhr.status}-response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -183,5 +183,10 @@ function listPhotos(token){
          }
       }
       xhr.send();
+   });
+}
+function sendPhotosphere(){
+   newToken().then(t => {
+      getUploadURL(t);
    });
 }
