@@ -218,11 +218,12 @@ response:${xhr.response}`);
       xhr.send();
    });
 }
+
 function sendPhotosphere(){
    newToken().then(t => {
       getUploadURL(t).then(uploadUrl => {
          document.getElementById('photo').files[0].arrayBuffer().then(data => {
-            sendImageData(t, data, uploadUrl).then(() => {
+            sendImageData(t, new Uint8Array(data), uploadUrl).then(() => {
                sendMetadata(t, uploadUrl, document.getElementById('latitude').value, document.getElementById('longitude').value);
             });
          });
