@@ -65,9 +65,10 @@ response:${xhr.response.uploadUrl}`);
 /*
 Envia uma foto para o Street View por meio da URL de upload. Somente o arquivo, sem metadados.
 @param {String} token - o token de acesso OAuth 2.0
+@param {String} data - o id de um input file
 @param {String} uploadUrl - URL retornada pelo método getUploadURL()
 */
-function sendImageData(token, uploadUrl){
+function sendImageData(token, data, uploadUrl){
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.open('POST', uploadUrl, true);
@@ -84,7 +85,7 @@ response:${xhr.response}`);
             }
          }
       }
-      xhr.send(document.getElementById('photo').files[0]);
+      xhr.send(document.getElementById(data).files[0]);
    });
 }
 
@@ -148,7 +149,7 @@ function updateConnections(token, photoId, targetPhotoId){
       var xhr = new XMLHttpRequest();
       let url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}&updateMask=connections`;
       xhr.responseType = 'json';
-      xhr.open('POST', uploadUrl, true);
+      xhr.open('PUT', url, true);
       xhr.setRequestHeader('Content-type', 'application/json');
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
@@ -260,8 +261,4 @@ function sendPhotosphere(){
          });
       });
    });
-}
-
-function listP(){
-   
 }
