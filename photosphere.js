@@ -4,6 +4,9 @@ const API_KEY = 'AIzaSyDjlX0EgBOzuIs9y-ibufnqnYLkJpPAhxU';
 var client = null;
 var access_token = null;
 
+/*
+Inicializa o GSI (Google Identity Service)
+*/
 function initClient(){
    client = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
@@ -17,9 +20,14 @@ function initClient(){
       },
    });
 }
+
+/*
+Revoga o token de acesso OAuth atual
+*/
 function revokeToken(){
    google.accounts.oauth2.revoke(access_token, () => {console.log('access token revoked')});
 }
+
 /*
 Gera um novo token de acesso OAuth ou retorna o atual caso ainda esteja válido
 */
@@ -35,6 +43,11 @@ function newToken(){
    });
 }
 
+function log(a, b, c){
+   console.log(`${a}`);
+   console.log(`${b}`);
+   console.log(`${c}`);
+}
 /*
 Solicita uma URL para upload de foto.
 @param {String} token - o token de acesso OAuth 2.0
@@ -49,9 +62,7 @@ function getUploadURL(token){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:getUploadURL()
-status:${xhr.status}
-response:${xhr.response.uploadUrl}`);
+               log(`f:getUploadURL()`, `status:${xhr.status}`, `response:${xhr.response.uploadUrl}`);
                resolve(xhr.response.uploadUrl);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -76,9 +87,7 @@ function sendImageData(token, data, uploadUrl){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:sendImageData()
-status:${xhr.status}
-response:${xhr.response}`);
+               log(`f:sendImageData()`, `status:${xhr.status}`, `response:${xhr.response}`);
                resolve(true); // Em caso de sucesso a resposta é vazia
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -118,9 +127,7 @@ function sendMetadata(token, uploadUrl, latitude, longitude){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:sendMetadata()
-status:${xhr.status}
-response:${xhr.response}`);
+               log(`f:sendMetadata()`, `status:${xhr.status}`, `response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -132,32 +139,53 @@ response:${xhr.response}`);
 }
 
 /*
-Atualiza as conexões de uma foto no Street View.
+Cria uma conexão bidirecional entre duas fotos no Street View.
 @param {String} token - o token de acesso OAuth 2.0
-@param {String} photoId - ID de uma foto
-@param {String} targetPhotoId - ID de uma foto para onde apontar
+@param {String} photoId1 - ID de uma foto
+@param {String} photoId2 - ID de uma foto
 */
-function updateConnections(token, photoId, targetPhotoId){
+function updateConnections(token, photoId1, photoId2){
    const data = JSON.stringify({
-      "connections": [{
-         "target": {
-            "id": targetPhotoId
+      "updatePhotoRequests": [
+         {
+            "photo": {
+                "photoId": {
+                    "id": photoId1
+                },
+                "connections": [{
+                    "target": {
+                       "id": PhotoId2
+                    }
+                 }]
+            },
+            "updateMask": "connections"
+         },
+         {
+            "photo": {
+                "photoId": {
+                    "id": photoId2
+                },
+                "connections": [{
+                    "target": {
+                       "id": PhotoId1
+                    }
+                 }]
+            },
+            "updateMask": "connections"
          }
-      }]
+      ]
    });
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
-      let url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}&updateMask=connections`;
+      let url = `https://streetviewpublish.googleapis.com/v1/photos:batchUpdate?key=${API_KEY}`;
       xhr.responseType = 'json';
-      xhr.open('PUT', url, true);
+      xhr.open('POST', url, true);
       xhr.setRequestHeader('Content-type', 'application/json');
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:updateConnections()
-status:${xhr.status}
-response:${xhr.response}`);
+               log(`f:updateConnections()`, `status:${xhr.status}`, `response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -183,9 +211,7 @@ function deletePhoto(token, photoId){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(`f:deletePhoto()
-status:${xhr.status}
-response:${xhr.response}`);
+               log(`f:deletePhoto()`, `status:${xhr.status}`, `response:${xhr.response}`);
                resolve(true); // Em caso de sucesso a resposta é um JSON vazio
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -211,10 +237,7 @@ function getPhoto(token, photoId){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.response);
-               console.log(`f:getPhoto()
-status:${xhr.status}
-response:${xhr.response}`);
+               log(`f:getPhoto()`, `status:${xhr.status}`, `response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -239,10 +262,7 @@ function listPhotos(token){
       xhr.onreadystatechange = function() {
          if(xhr.readyState == 4){
             if(xhr.status >= 200 && xhr.status <= 206){
-               console.log(xhr.response);
-               console.log(`f:listPhotos()
-status:${xhr.status}
-response:${xhr.response}`);
+               log(`f:listPhotos()`, `status:${xhr.status}`, `response:${xhr.response}`);
                resolve(xhr.response);
             }else{
                reject(`Error: status code ${xhr.status}.`);
@@ -256,7 +276,7 @@ response:${xhr.response}`);
 function sendPhotosphere(){
    newToken().then(t => {
       getUploadURL(t).then(uploadUrl => {
-         sendImageData(t, uploadUrl).then(() => {
+         sendImageData(t, 'photo', uploadUrl).then(() => {
             sendMetadata(t, uploadUrl, document.getElementById('latitude').value, document.getElementById('longitude').value);
          });
       });
