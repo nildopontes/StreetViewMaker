@@ -1,6 +1,5 @@
 const CLIENT_ID = '824279225081-mmrvha4gr4l13jp7d9k25a917mu2elg0.apps.googleusercontent.com';
 const SCOPE = 'https://www.googleapis.com/auth/streetviewpublish';
-const API_KEY = 'AIzaSyDjlX0EgBOzuIs9y-ibufnqnYLkJpPAhxU';
 var client = null;
 var access_token = null;
 
@@ -53,7 +52,7 @@ Solicita uma URL para upload de foto.
 @param {String} token - o token de acesso OAuth 2.0
 */
 function getUploadURL(token){
-   const url = `https://streetviewpublish.googleapis.com/v1/photo:startUpload?key=${API_KEY}`;
+   const url = `https://streetviewpublish.googleapis.com/v1/photo:startUpload`;
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
@@ -119,7 +118,7 @@ function sendMetadata(token, uploadUrl, latitude, longitude){
    });
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
-      let url = `https://streetviewpublish.googleapis.com/v1/photo?key=${API_KEY}`;
+      let url = `https://streetviewpublish.googleapis.com/v1/photo`;
       xhr.responseType = 'json';
       xhr.open('POST', url, true);
       xhr.setRequestHeader('Content-type', 'application/json');
@@ -177,7 +176,7 @@ function updateConnections(token, photoId1, photoId2){
    });
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
-      let url = `https://streetviewpublish.googleapis.com/v1/photos:batchUpdate?key=${API_KEY}`;
+      let url = `https://streetviewpublish.googleapis.com/v1/photos:batchUpdate`;
       xhr.responseType = 'json';
       xhr.open('POST', url, true);
       xhr.setRequestHeader('Content-type', 'application/json');
@@ -202,7 +201,7 @@ Deleta uma foto no Street View.
 @param {String} photoId - ID de uma foto
 */
 function deletePhoto(token, photoId){
-   const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}`;
+   const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}`;
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
@@ -228,7 +227,7 @@ Recupera detalhes sobre uma foto no Street View.
 @param {String} photoId - ID de uma foto
 */
 function getPhoto(token, photoId){
-   const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?key=${API_KEY}`;
+   const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}`;
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
@@ -251,9 +250,11 @@ function getPhoto(token, photoId){
 /*
 Recupera uma lista de fotos no Street View.
 @param {String} token - o token de acesso OAuth 2.0
+@param {String} pageToken - um token obtido na chamada anterior para obter a próxima pagina de resultados
 */
-function listPhotos(token){
-   const url = `https://streetviewpublish.googleapis.com/v1/photos?key=${API_KEY}`;
+function listPhotos(token, pageToken = ''){
+   typeof(pageToken) !== 'undefined'
+   let url = `https://streetviewpublish.googleapis.com/v1/photos${pageToken === '' ? '' : '?&pageToken=' + pageToken}`;
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
