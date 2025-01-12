@@ -1,5 +1,5 @@
 const CLIENT_ID = '824279225081-mmrvha4gr4l13jp7d9k25a917mu2elg0.apps.googleusercontent.com';
-const SCOPE = 'https://www.googleapis.com/auth/streetviewpublish';
+const SCOPE = 'https://www.googleapis.com/auth/streetviewpublish https://www.googleapis.com/auth/drive.file';
 var client = null;
 var access_token = null;
 
