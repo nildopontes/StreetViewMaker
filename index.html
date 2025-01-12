@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!--<link rel="stylesheet" href="/assets/style.css">-->
+      <link rel="icon" href="favicon.png" type="image/png">
+      <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
+      <style>
+         body,html{
+            margin:0;
+            padding:0;
+            background:#111;
+            min-height:100vh;
+            font-family:Helvetica;
+         }
+         header{
+            width:100%;
+            height:60px;
+            background:#2196f3;
+            font-family:Helvetica;
+            font-size:20px;
+            line-height:60px;
+            color:white;
+         }
+         #icon{
+            width:50px;
+            height:50px;
+            margin-top:5px;
+            margin-right:15px;
+            margin-left:15px;
+            float:left;
+            border-radius:50%;
+            overflow:hidden;
+         }
+         #icon>img{
+            height:100%;
+         }
+         footer{
+            width:100%;
+            height:30px;
+            font-size:15px;
+            line-height:30px;
+            color:white;
+            text-align:center;
+         }
+         a:link,a:visited{
+            color:#ff4081;
+            text-decoration:none;
+         }
+         #card{
+            width:90%;
+            margin:5%;
+            border-radius:10px;
+            box-sizing:border-box;
+            padding:10px;
+            background:#444;
+            font-size:15px;
+            color:white;
+         }
+         #signin{
+            cursor:pointer;
+         }
+      </style>
+   </head>
+   <body>
+      <header>
+         <div id="icon">
+            <img src="icon.png" alt="Icon">
+         </div>
+         <span>Street View Publish Client</span>
+      </header>
+      <div id="card">
+         <h1>Antes de começar...</h1>
+         <p>Use o botão abaixo para se autenticar com sua conta Google.</p>
+         <img src="btn_google_signin.png" alt="google signin button" id="signin">
+         <p>
+            Este aplicativo permite enviar fotos 360° para o Street View e criar conexões entre elas.<br>
+            Suas fotos precisam ter os metadados descritos em <a href="https://developers.google.com/streetview/spherical-metadata?hl=pt-br">Metadados XMP de Photo Spheres</a> para publicação. Além disso deve estar no formato JPEG, possuir no mínimo 7.5MP (3840 x 1920 px), ter no máximo 75MB e estar na proporção 2:1.<br>
+            Uma boa sugestão é usar uma versão antiga do APK de câmera do Google pois este gera uma imagem compatível.<br>
+            O projeto foi inspirado em <a href="https://github.com/moom0o/PhotoSphereStudio/">PhotoSphereStudio</a>
+         <p>
+      </div>
+      <footer>
+         Source Code: <a href="https://github.com/nildopontes/Street-View-Publish-Client">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>
+      </footer>
+   </body>
+</html>
