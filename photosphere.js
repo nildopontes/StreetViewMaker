@@ -31,7 +31,7 @@ function revokeToken(){
 Gera um novo token de acesso OAuth ou retorna o atual caso ainda esteja válido
 */
 function newToken(){
-   return  new Promise((resolve, reject) => {
+   return new Promise((resolve, reject) => {
       if(sessionStorage.getItem('secureToken') !== null && parseInt(Date.now()/1000, 10) < parseInt(sessionStorage.getItem('expireToken'), 10)){
          console.log(access_token);
          resolve(sessionStorage.getItem('secureToken'));
