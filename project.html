@@ -356,12 +356,14 @@
                xhr.onreadystatechange = function() {
                   if(xhr.readyState == 4){
                      if(xhr.status >= 200 && xhr.status <= 206){
-                        console.log(xhr.response);
                         if(xhr.response.files.length > 0){
                            getFile(token, xhr.response.files[0].id).then(r => {
+                              if(typeof(r.idOnDrive) === 'undefined') reject('A estrutura do arquivo é inválida.');
+                              if(r.idOnDrive == 'idondrive'){
+                                 r.idOnDrive =  xhr.response.files[0].id;
+                              }
                               resolve(r);
                            });
-                           //pegar o id do arquivo, baixar o conteúdo, testar se é válido e salvar o id em db.idOnDrive
                         }else{
                            sendMetadata(token).then(path => {
                               let emptyFile = {
@@ -418,6 +420,9 @@
          }
          function synchronizeDB(){
             
+         }
+         window.addEventListener('load', e => {
+            newToken().then(t => discoverDatabaseID(t));
          }
       </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
