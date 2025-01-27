@@ -101,8 +101,8 @@ function sendImageData(token, data, uploadUrl){
 Envia os metadados de uma foto no Street View para concluir o upload.
 @param {String} token - o token de acesso OAuth 2.0
 @param {String} uploadUrl - ID de uma foto
-@param {String} latitude - Latitude do local onde a foto foi registrada  no formato decimal
-@param {String} longitude - Longitude do local onde a foto foi registrada no formato decimal
+@param {Float} latitude - Latitude do local onde a foto foi registrada  no formato decimal
+@param {Float} longitude - Longitude do local onde a foto foi registrada no formato decimal
 */
 function sendMetadata(token, uploadUrl, latitude, longitude){
    const data = JSON.stringify({
@@ -136,49 +136,28 @@ function sendMetadata(token, uploadUrl, latitude, longitude){
       xhr.send(data);
    });
 }
-
 /*
-Cria uma conexão bidirecional entre duas fotos no Street View.
+Atualiza as conexões de uma foto no Street View.
 @param {String} token - o token de acesso OAuth 2.0
-@param {String} photoId1 - ID de uma foto
-@param {String} photoId2 - ID de uma foto
+@param {String} photoId - ID de uma foto
+@param {Array} connections - um array contendo as novas conexões. Estas irão sobrescrever as atuais.
 */
-function updateConnections(token, photoId1, photoId2){
-   const data = JSON.stringify({
-      "updatePhotoRequests": [
-         {
-            "photo": {
-                "photoId": {
-                    "id": photoId1
-                },
-                "connections": [{
-                    "target": {
-                       "id": PhotoId2
-                    }
-                 }]
-            },
-            "updateMask": "connections"
-         },
-         {
-            "photo": {
-                "photoId": {
-                    "id": photoId2
-                },
-                "connections": [{
-                    "target": {
-                       "id": PhotoId1
-                    }
-                 }]
-            },
-            "updateMask": "connections"
+function updateConnections(token, photoId, connections){
+   let data = {
+      "connections": []
+   };
+   connections.map(x => {
+      connections.push({
+         "target": {
+            "id": x
          }
-      ]
+      });
    });
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
-      let url = `https://streetviewpublish.googleapis.com/v1/photos:batchUpdate`;
+      let url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?updateMask=connections`;
       xhr.responseType = 'json';
-      xhr.open('POST', url, true);
+      xhr.open('PUT', url, true);
       xhr.setRequestHeader('Content-type', 'application/json');
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onreadystatechange = function() {
@@ -191,7 +170,7 @@ function updateConnections(token, photoId1, photoId2){
             }
          }
       }
-      xhr.send(data);
+      xhr.send(JSON.stringify(data));
    });
 }
 
@@ -272,6 +251,23 @@ function listPhotos(token, pageToken = ''){
       }
       xhr.send();
    });
+}
+
+function haversineDistance([lat1, lon1], [lat2, lon2]){
+   const toRadian = angle => (Math.PI / 180) * angle;
+   const distance = (a, b) => (Math.PI / 180) * (a - b);
+   const RADIUS_OF_EARTH_IN_KM = 6371;
+   const dLat = distance(lat2, lat1);
+   const dLon = distance(lon2, lon1);
+
+   lat1 = toRadian(lat1);
+   lat2 = toRadian(lat2);
+
+   // Haversine Formula
+   const a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+   const c = 2 * Math.asin(Math.sqrt(a));
+   let finalDistance = RADIUS_OF_EARTH_IN_KM * c;
+   return finalDistance;
 }
 
 function sendPhotosphere(){

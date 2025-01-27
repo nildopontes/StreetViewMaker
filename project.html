@@ -5,6 +5,404 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <!--<link rel="stylesheet" href="/assets/style.css">-->
       <link rel="icon" href="favicon.png" type="image/png">
+      <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRzz4DAjtabVvXOyI3i5mLSYXjYhbFqS8&loading=async&callback=initMap&libraries=marker"></script>
+      <script src="photosphere.js"></script>
+      <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
+      <script>
+         var db = {
+            "API_KEY": "ALZAkldjfklsdgjdkflgjdflkgjdflkgjdflk",
+            "idOnDrive": "idondrive",
+            "projects": [
+               {
+                  "name": "nameProject",
+                  "photos": [
+                     {
+                        "photoId": "CAjgkghsldkhshgskhgskjdhgskjhgsdvx",
+                        "name": "namePhoto",
+                        "latLng": [-9.675675, -35.658468],
+                        "connections": ["CAjlgjlsdgldfkprgçljkj~kgdlçfjhdlhjgj", "CAlksdfljlhçkfaçsdjçckbçlkbldfkgj", "CAALKDASLFSDFN,NhkjhClmv.xcvcvjldfkgj"]
+                     },
+                  ]
+               },
+            ]
+            
+         };
+         var map;
+         var markers = [], lines = [];
+         function initMap(){
+            map = new google.maps.Map(document.getElementById('workspace'), {
+               center: { lat: -9.519195, lng: -35.776539 },
+               zoom: 15,
+               mapId: "project",
+               disableDefaultUI: true,
+               zoomControl: true,
+               mapTypeControl: true,
+            });
+         }
+         function addMarker(lat, lng){
+            const ico = document.createElement('img');
+            ico.src = 'cam.png';
+            let marker = new google.maps.marker.AdvancedMarkerElement({
+               position: { lat: lat, lng: lng },
+               //position lat: -9.519195, lng: -35.776539
+               title: "Meu condominio",
+               content: ico
+            });
+            marker.data = 'teste';
+            markers.push(marker);
+            marker.setMap(map);
+         }
+         function removeMarker(data){
+            markers.map((x, i) => {
+               if(markers[i].data == data){
+                  markers[i].map = null;
+                  markers.splice(i, 1);
+               }
+            });
+         }
+         /* lat:-9.51771430373315, lng:-35.77610951128148}
+            lat:-9.51796825120393, lng:-35.77473622026586} */
+         function addLine(lat1, lng1, lat2, lng2){
+            let coords = [
+               {lat: lat1, lng: lng1},
+               {lat: lat2, lng: lng2}
+            ];
+            let line = new google.maps.Polyline({
+               path: coords,
+               geodesic: true,
+               strokeColor: '#6495ED',
+               strokeOpacity: 1.0,
+               strokeWeight: 8
+            });
+            line.data = 'teste';
+            lines.push(line);
+            line.setMap(map);
+         }
+         function removeLine(data){
+            lines.map((x, i) => {
+               if(lines[i].data == data){
+                  lines[i].setMap(null);
+                  lines.splice(i, 1);
+               }
+            });
+         }
+         window.addEventListener('load', (event) => {
+            map.addListener('click', function(e){
+               console.log(e.latLng.lat(), e.latLng.lng());
+            });
+         });
+         function addPhoto(projectName, idPhoto, lat, lng, photoName){
+            let found = 0;
+            db.projects.map((x, i) => {
+               if(db.projects[i].name == projectName){
+                  db.projects[i].photos.push({
+                     "photoId": idPhoto,
+                     "name": photoName,
+                     "latLng": [lat, lng],
+                     "connections": []
+                  });
+                  found ++;
+                  alert('Foto adicionada com sucesso.');
+               }
+            });
+            if(found == 0) alert('Erro. O projeto não existe.');
+         }
+         function addProject(name){
+            let found = 0;
+            db.projects.map((x, i) => {
+               if(db.projects[i].name == name) found++;
+            });
+            if(found > 0){
+               alert('Este projeto já existe.');
+            }else{
+               db.projects.push({
+                  "name": name,
+                  "photos": []
+               });
+               alert('Projeto criado com sucesso.');
+            }
+         }
+         function removePhoto(photoId, projectName){
+            let found = 0;
+            db.projects.map((x, i) => {
+               if(db.projects[i].name == projectName){
+                  db.projects[i].photos.map((y, j) => {
+                     if(db.projects[i].photos[j].photoId == photoId){
+                        found++;
+                        newToken().then(t => {
+                           deletePhoto(t, photoId).then(r => {
+                              if(r === true){
+                                 db.projects[i].photos[j].splice(j, 1);
+                                 alert('Foto removida com sucesso.');
+                              }
+                           }).catch(e => alert(`A foto foi encontrada mas ocorreu um erro ao tentar apagar. ${e}`));
+                        
+                        });
+                     }
+                  });
+               }
+            });
+            if(found == 0) alert('A foto não foi encontrada. Verifique se o ID da foto e nome do projeto estão corretos.');
+         }
+         function renamePhoto(photoId, newName, projectName){
+            let found = 0;
+            db.projects.map((x, i) => {
+               if(db.projects[i].name == projectName){
+                  db.projects[i].photos.map((y, j) => {
+                     if(db.projects[i].photos[j].photoId == photoId){
+                        db.projects[i].photos[j].name = newName;
+                        found++;
+                        alert('Foto renomeada com sucesso.');
+                     }
+                  });
+               }
+            });
+            if(found == 0) alert('A foto não foi encontrada. Verifique se o ID da foto e nome do projeto estão corretos.');
+         }
+         function addConnection(photoId1, photoId2, projectName){
+            if(photoId1 == photoId2){
+               alert('É necessário 2 IDs de fotos.');
+               return;
+            }
+            let found = 0;
+            db.projects.map((x, i) => {
+               if(db.projects[i].name == projectName){
+                  found++;
+                  db.projects[i].photos.map((y, j) => {
+                     if(db.projects[i].photos[j].photoId == photoId1 || db.projects[i].photos[j].photoId == photoId2){
+                        found++;
+                     }
+                  });
+               }
+            });
+            if(found == 3){
+               db.projects.map((x, i) => {
+                  if(db.projects[i].name == projectName){
+                     db.projects[i].photos.map((y, j) => {
+                        if(db.projects[i].photos[j].photoId == photoId1){
+                           if(db.projects[i].photos[j].connections.indexOf(photoId2) == -1){
+                              db.projects[i].photos[j].connections.push(photoId2);
+                              newToken().then(t => updateConnections(t, photoId1, db.projects[i].photos[j].connections));
+                           }
+                        }
+                        if(db.projects[i].photos[j].photoId == photoId2){
+                           if(db.projects[i].photos[j].connections.indexOf(photoId1) == -1){
+                              db.projects[i].photos[j].connections.push(photoId1);
+                              newToken().then(t => updateConnections(t, photoId2, db.projects[i].photos[j].connections));
+                           }
+                        }
+                     });
+                  }
+               });
+               alert('Conexão criada com sucesso.');
+            }else{
+               alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
+            }
+         }
+         function removeConnection(photoId1, photoId2, projectName){
+            if(photoId1 == photoId2){
+               alert('É necessário 2 ID de fotos diferentes.');
+               return;
+            }
+            let found = 0;
+            db.projects.map((x, i) => {
+               if(db.projects[i].name == projectName){
+                  found++;
+                  db.projects[i].photos.map((y, j) => {
+                     if(db.projects[i].photos[j].photoId == photoId1 || db.projects[i].photos[j].photoId == photoId2){
+                        found++;
+                     }
+                  });
+               }
+            });
+            if(found == 3){
+               db.projects.map((x, i) => {
+                  if(db.projects[i].name == projectName){
+                     db.projects[i].photos.map((y, j) => {
+                        if(db.projects[i].photos[j].photoId == photoId1){
+                           found = db.projects[i].photos[j].connections.indexOf(photoId2);
+                           if(found != -1){
+                              db.projects[i].photos[j].connections.splice(found, 1);
+                              newToken().then(t => {
+                                 updateConnections(t, photoId1, db.projects[i].photos[j].connections);
+                              }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
+                           }
+                        }
+                        if(db.projects[i].photos[j].photoId == photoId2){
+                           found = db.projects[i].photos[j].connections.indexOf(photoId1);
+                           if(found != -1){
+                              db.projects[i].photos[j].connections.splice(found, 1);
+                              newToken().then(t => {
+                                 updateConnections(t, photoId2, db.projects[i].photos[j].connections);
+                              }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
+                           }
+                        }
+                     });
+                  }
+               });
+            }else{
+               alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
+            }
+         }
+         /*
+         Envia os metadados dos arquivo para o Google Drive. Somente os metadados.
+         @param {String} token - o token de acesso ao GDrive
+         @param {String} fileName - o nome do arquivo
+         */
+         function sendMetadata(token){
+            const data = JSON.stringify({
+               "name": "StreetViewDB.json"
+            });
+            const url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable';
+            return new Promise((resolve, reject) => {
+               var xhr = new XMLHttpRequest();
+               xhr.open('POST', url, true);
+               xhr.setRequestHeader('Content-type', 'application/json');
+               xhr.setRequestHeader('X-Upload-Content-Type', 'application/octet-stream');
+               xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+               xhr.onreadystatechange = function() {
+                  if(xhr.readyState == 4){
+                     if(xhr.status >= 200 && xhr.status <= 206){
+                        resolve(xhr.getResponseHeader('Location'));
+                     }else{
+                        reject(`Error: status code ${xhr.status}.`);
+                     }
+                  }
+               }
+               xhr.send(data);
+            });
+         }
+         /*
+         Envia os dados de um arquivo para o GDrive, uma vez que os metadados já foram enviados com a função sendMetadata()
+         @param {String} token - o token de acesso ao GDrive
+         @param {Uint8Array/String} data - o conteúdo do arquivo
+         @param {String} pathResumable - o path para o arquivo obtido na função sendMetadata()
+         */
+         function sendFile(token, data, pathResumable){
+            return new Promise((resolve, reject) => {
+               var xhr = new XMLHttpRequest();
+               xhr.responseType = 'json';
+               xhr.open('PUT', pathResumable, true);
+               xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+               xhr.onreadystatechange = function() {
+                  if(xhr.readyState == 4){
+                     if(xhr.status >= 200 && xhr.status <= 206){
+                        resolve(xhr.response.id);
+                     }else{
+                        reject(`Error: status code ${xhr.status}.`);
+                     }
+                  }
+               }
+               xhr.send(data);
+            });
+         }
+         /*
+         Altera o conteúdo de um arquivo do Google Drive pelo id
+         @param {String} token - o token de acesso ao GDrive
+         @param {Uint8Array/String} data - o novo conteúdo do arquivo
+         @param {String} fileId - o ID do arquivo
+         */
+         function updateFile(token, data, fileId){
+            if(data.length == 0) return;
+            var url = `https://www.googleapis.com/upload/drive/v3/files/${fileId}`;
+            return new Promise((resolve, reject) => {
+               var xhr = new XMLHttpRequest();
+               xhr.responseType = 'json';
+               xhr.open('PATCH', url, true);
+               xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+               xhr.onreadystatechange = function() {
+                  if(xhr.readyState == 4){
+                     if(xhr.status >= 200 && xhr.status <= 206){
+                        resolve(xhr.response);
+                     }else{
+                        reject(`HTTP status code ${xhr.status}.`);
+                     }
+                  }
+               }
+               xhr.send(data);
+            });
+         }
+         /*
+         Baixa um arquivo armazendo no Google Drive
+         @param {String} token - o token de acesso ao GDrive
+         @param {String} id - o id do arquivo no Google Drive
+         */
+         function getFile(token, id){
+            const url = `https://www.googleapis.com/drive/v3/files/${id}?alt=media`;
+            return new Promise((resolve, reject) => {
+               var xhr = new XMLHttpRequest();
+               xhr.responseType = 'json';
+               xhr.open('GET', url, true);
+               xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+               xhr.onreadystatechange = function() {
+                  if(xhr.readyState == 4){
+                     if(xhr.status >= 200 && xhr.status <= 206){
+                        resolve(xhr.response);
+                     }else{
+                        reject(`Error: status code ${xhr.status}`);
+                     }
+                  }
+               }
+               xhr.send();
+            });
+         }
+         function discoverDatabaseID(token){
+            const url = `https://www.googleapis.com/drive/v3/files?pageSize=1&q=name+%3d+%27StreetViewDB.json%27+and+trashed+%3d+false+and+mimeType+%3d+%27application%2fjson%27`;
+            return new Promise((resolve, reject) => {
+               var xhr = new XMLHttpRequest();
+               xhr.responseType = 'json';
+               xhr.open('GET', url, true);
+               xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+               xhr.onreadystatechange = function() {
+                  if(xhr.readyState == 4){
+                     if(xhr.status >= 200 && xhr.status <= 206){
+                        console.log(xhr.response);
+                        if(xhr.response.files.length > 0){
+                           resolve(xhr.response.files[0]);
+                           //pegar o id do arquivo, baixar o conteúdo, testar se é válido e salvar o id em db.idOnDrive
+                        }
+                     }else{
+                        reject(`Error: status code ${xhr.status}`);
+                     }
+                  }
+               }
+               xhr.send();
+            });
+         }
+         function removeProject(name){
+            db.projects.map((x, i) => {
+               if(db.projects[i].name == name){
+                  if(db.projects[i].photos.length > 0){
+                     alert('Não é permitido apagar projetos que possuem fotos. Remova todas as fotos antes.');
+                  }else{
+                     db.projects.splice(i, 1);
+                     alert('Projeto apagado com sucesso');
+                  }
+               }
+            });
+         }
+         function renameProject(currentName, newName){
+            let found = 0;
+            db.projects.map((x, i) => {
+               if(db.projects[i].name == currentName){
+                  db.projects[i].name = newName;
+                  found++;
+               }
+            });
+            if(found > 0){
+               alert('Projeto renomeado com sucesso.');
+            }else{
+               alert('Este projeto não existe.');
+            }
+         }
+         function changeAPI_KEY(newKey){
+            db.API_KEY = newKey;
+            alert('Nova API_KEY salva com sucesso.');
+         }
+         function synchronizeDB(){
+            
+         }
+      </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
       <style>
          body,html{
@@ -58,6 +456,12 @@
             font-size:15px;
             color:white;
          }
+         #workspace{
+            width:100%;
+            height:500px;
+            background:white;
+            border-radius:3px;
+         }
       </style>
    </head>
    <body>
@@ -68,6 +472,8 @@
          <span>Street View Publish Client</span>
       </header>
       <div id="card">
+         <h1>Project Name</h1>
+         <div id="workspace"></div>
       </div>
       <footer>
          Source Code: <a href="https://github.com/nildopontes/Street-View-Publish-Client">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>
