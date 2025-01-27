@@ -422,7 +422,9 @@
             
          }
          window.addEventListener('load', e => {
-            newToken().then(t => discoverDatabaseID(t));
+            newToken().then(t => {
+               discoverDatabaseID(t).then(r => db = r);
+            });
          });
       </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
