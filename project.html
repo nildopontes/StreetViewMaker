@@ -347,7 +347,7 @@
             });
          }
          function discoverDatabaseID(token){
-            const url = `https://www.googleapis.com/drive/v3/files?pageSize=1&q=name+%3d+%27StreetViewDB.json%27+and+trashed+%3d+false+and+mimeType+%3d+%27application%2fjson%27`;
+            const url = `https://www.googleapis.com/drive/v3/files?pageSize=1&q=name%3d%27StreetViewDB.json%27+and+trashed%3dfalse`;
             return new Promise((resolve, reject) => {
                var xhr = new XMLHttpRequest();
                xhr.responseType = 'json';
