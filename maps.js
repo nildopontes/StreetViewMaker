@@ -20,14 +20,15 @@ function sha1(message){
 }
 function addMarker(lat, lng, name){ // Escolher a imagem final do ico
    const ico = document.createElement('img');
-   ico.src = 'cam.png';
+   ico.src = 'marker.svg';
+   ico.width = '20px';
    let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
       //position lat: -9.519195, lng: -35.776539
       title: name,
       content: ico
    });
-   sha1(lat.toString() + '-' + lng.toString()).then(digest => {
+   sha1(lat.toString() + lng.toString()).then(digest => {
       marker.data = digest;
       markers.push(marker);
       marker.setMap(map);
