@@ -9,18 +9,29 @@ function initMap(){ // incluir o javascript programaticamente somente depois que
       mapTypeControl: true,
    });
 }
-function addMarker(lat, lng){
+function sha1(message){
+   return new Promise((resolve, reject) => {
+      let msgUint8 = new TextEncoder().encode(message);
+      window.crypto.subtle.digest('SHA-256', msgUint8).then(hashBuffer => {
+         let hashArray = Array.from(new Uint8Array(hashBuffer));
+         resolve(hashArray.map(b => b.toString(16).padStart(2, '0')).join(''));
+      });
+   });
+}
+function addMarker(lat, lng, name){ // Escolher a imagem final do ico
    const ico = document.createElement('img');
    ico.src = 'cam.png';
    let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
       //position lat: -9.519195, lng: -35.776539
-      title: "Meu condominio",
+      title: name,
       content: ico
    });
-   marker.data = 'teste';
-   markers.push(marker);
-   marker.setMap(map);
+   sha1(lat.toString() + '-' + lng.toString()).then(digest => {
+      marker.data = digest;
+      markers.push(marker);
+      marker.setMap(map);
+   });
 }
 function removeMarker(data){
    markers.map((x, i) => {
@@ -44,9 +55,11 @@ function addLine(lat1, lng1, lat2, lng2){
       strokeOpacity: 1.0,
       strokeWeight: 8
    });
-   line.data = 'teste';
-   lines.push(line);
-   line.setMap(map);
+   sha1(lat1.toString() + lng1.toString() + lat2.toString() + lng2.toString()).then(digest => {
+      line.data = digest;
+      lines.push(line);
+      line.setMap(map);
+   });
 }
 function removeLine(data){
    lines.map((x, i) => {
