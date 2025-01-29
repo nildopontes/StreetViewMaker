@@ -12,24 +12,6 @@
       <script src="maps.js"></script>
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script>
-         var db = {
-            "API_KEY": "ALZAkldjfklsdgjdkflgjdflkgjdflkgjdflk",
-            "idOnDrive": "idondrive",
-            "projects": [
-               {
-                  "name": "nameProject",
-                  "photos": [
-                     {
-                        "photoId": "CAjgkghsldkhshgskhgskjdhgskjhgsdvx",
-                        "name": "namePhoto",
-                        "latLng": [-9.675675, -35.658468],
-                        "connections": ["CAjlgjlsdgldfkprgçljkj~kgdlçfjhdlhjgj", "CAlksdfljlhçkfaçsdjçckbçlkbldfkgj", "CAALKDASLFSDFN,NhkjhClmv.xcvcvjldfkgj"]
-                     },
-                  ]
-               },
-            ]
-            
-         };
          window.addEventListener('load', e => {
             newToken().then(t => {
                discoverDatabaseID(t).then(r => db = r);

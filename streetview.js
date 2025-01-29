@@ -187,8 +187,7 @@ Recupera uma lista de fotos no Street View.
 @param {String} token - o token de acesso OAuth 2.0
 @param {String} pageToken - um token obtido na chamada anterior para obter a próxima pagina de resultados
 */
-function listPhotos(token, pageToken = ''){
-   typeof(pageToken) !== 'undefined'
+function listPhotos(token, pageToken = ''){ // Testar essa função
    let url = `https://streetviewpublish.googleapis.com/v1/photos${pageToken === '' ? '' : '?&pageToken=' + pageToken}`;
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
