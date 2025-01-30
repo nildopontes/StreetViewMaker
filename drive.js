@@ -146,10 +146,3 @@ function discoverDatabaseID(token){
       xhr.send();
    });
 }
-/*
-Atualiza o arquivo que armazena os dados do usuário no Google Drive.
-@param {String} token - o token de acesso ao GDrive
-*/
-function synchronizeDB(token){
-   
-}

@@ -18,15 +18,11 @@ function sha1(message){
       });
    });
 }
-function addMarker(lat, lng, name){ // Escolher a imagem final do ico
-   const ico = document.createElement('img');
-   ico.src = 'marker.svg';
-   ico.width = '20px';
+function addMarker(lat, lng, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
       //position lat: -9.519195, lng: -35.776539
-      title: name,
-      content: ico
+      title: name
    });
    sha1(lat.toString() + lng.toString()).then(digest => {
       marker.data = digest;
@@ -75,7 +71,7 @@ window.addEventListener('load', (event) => { // Definir um uso par este trecho
       console.log(e.latLng.lat(), e.latLng.lng());
    });
 });
-function addPhoto(projectName, idPhoto, lat, lng, photoName){ // Fazer as alterações no mapa
+function addPhoto(projectName, idPhoto, lat, lng, photoName){
    let found = 0;
    db.projects.map((x, i) => {
       if(db.projects[i].name == projectName){
@@ -85,7 +81,9 @@ function addPhoto(projectName, idPhoto, lat, lng, photoName){ // Fazer as altera
             "latLng": [lat, lng],
             "connections": []
          });
+         addMarker(lat, lng, photoName);
          found ++;
+         newToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
          alert('Foto adicionada com sucesso.');
       }
    });
@@ -103,6 +101,7 @@ function addProject(name){
          "name": name,
          "photos": []
       });
+      newToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
       alert('Projeto criado com sucesso.');
    }
 }
@@ -117,6 +116,7 @@ function removePhoto(photoId, projectName){ // Fazer as alterações no mapa
                   deletePhoto(t, photoId).then(r => {
                      if(r === true){
                         db.projects[i].photos[j].splice(j, 1);
+                        updateFile(t, JSON.stringify(db), db.idOnDrive);
                         alert('Foto removida com sucesso.');
                      }
                   }).catch(e => alert(`A foto foi encontrada mas ocorreu um erro ao tentar apagar. ${e}`));
@@ -136,6 +136,7 @@ function renamePhoto(photoId, newName, projectName){ // Fazer as alterações no
             if(db.projects[i].photos[j].photoId == photoId){
                db.projects[i].photos[j].name = newName;
                found++;
+               newToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
                alert('Foto renomeada com sucesso.');
             }
          });
@@ -178,6 +179,7 @@ function addConnection(photoId1, photoId2, projectName){ // Fazer as alteraçõe
             });
          }
       });
+      newToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
       alert('Conexão criada com sucesso.');
    }else{
       alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
@@ -224,6 +226,8 @@ function removeConnection(photoId1, photoId2, projectName){ // Fazer as alteraç
             });
          }
       });
+      newToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+      alert('Conaxão removida com sucesso.')
    }else{
       alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
    }
@@ -235,6 +239,7 @@ function removeProject(name){
             alert('Não é permitido apagar projetos que possuem fotos. Remova todas as fotos antes.');
          }else{
             db.projects.splice(i, 1);
+            newToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
             alert('Projeto apagado com sucesso');
          }
       }
@@ -249,6 +254,7 @@ function renameProject(currentName, newName){
       }
    });
    if(found > 0){
+      newToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
       alert('Projeto renomeado com sucesso.');
    }else{
       alert('Este projeto não existe.');
