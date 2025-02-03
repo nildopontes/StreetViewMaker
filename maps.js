@@ -101,6 +101,7 @@ function listProjects(){
    db.projects.map(x => {
       projects += `<div class="project"><div class="name" onclick="goToProject('${x.name}')">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span></div></div>`;
    });
+   document.getElementById('projects').innerHTML = projects;
    
 }
 function addProject(){
