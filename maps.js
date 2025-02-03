@@ -73,11 +73,11 @@ function removeLine(data){
       }
    });
 }
-window.addEventListener('load', event => { // Definir um uso par este trecho
+/*window.addEventListener('load', event => { // Definir um uso par este trecho
    map.addListener('click', function(e){
       console.log(e.latLng.lat(), e.latLng.lng());
    });
-});
+});*/
 function addPhoto(projectName, idPhoto, lat, lng, photoName){
    let found = 0;
    db.projects.map((x, i) => {
@@ -95,6 +95,13 @@ function addPhoto(projectName, idPhoto, lat, lng, photoName){
       }
    });
    if(found == 0) alert('Erro. O projeto não existe.');
+}
+function listProjects(){
+   let projects = '';
+   db.projects.map(x => {
+      projects += `<div class="project"><div class="name" onclick="goToProject('${x.name}')">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span></div></div>`;
+   });
+   
 }
 function addProject(){
    let name = prompt('Escolha um nome para o projeto.');
@@ -259,7 +266,12 @@ function removeProject(name){
       }
    });
 }
-function renameProject(currentName, newName){
+function renameProject(currentName){
+   let newName = prompt('Escolha um nome para o projeto.');
+   if(newName === null || newName.length == 0){
+      alert('O nome precisa ter pelo menos 1 caractere.');
+      return;
+   }
    let found = 0;
    db.projects.map((x, i) => {
       if(db.projects[i].name == currentName){
