@@ -11,7 +11,7 @@
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script>
          window.addEventListener('load', event => {
-            getToken().then(t => discoverDatabaseID(t));
+            getToken().then(t => discoverDatabaseID(t).then(r => db = r));
          });
       </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
