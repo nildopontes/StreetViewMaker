@@ -16,6 +16,7 @@ function initClient(){ // Redirecionar para projects.html
          sessionStorage.setItem('secureToken', access_token);
          sessionStorage.setItem('expireToken', parseInt(Date.now()/1000, 10) + tokenResponse.expires_in - 60); // 60 segundos de margem de segurança
          console.log(access_token);
+         console.log(tokenResponse);
       },
    });
 }
