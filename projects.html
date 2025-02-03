@@ -9,6 +9,11 @@
       <script src="maps.js"></script>
       <script src="drive.js"></script>
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
+      <script>
+         window.addEventListener('load', event => {
+            getToken().then(t => discoverDatabaseID(t));
+         });
+      </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
       <style>
          body,html{
