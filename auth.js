@@ -6,17 +6,24 @@ var access_token = null;
 /*
 Inicializa o GSI (Google Identity Service)
 */
-function initClient(){ // Redirecionar para projects.html
+function initClient(){
    client = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPE,
       prompt: '',
-      callback: tokenResponse => { // Verificar se o usuário aprovou todos os escorpos e emitir um erro caso não tenha aprovado
-         access_token = tokenResponse.access_token;
-         sessionStorage.setItem('secureToken', access_token);
-         sessionStorage.setItem('expireToken', parseInt(Date.now()/1000, 10) + tokenResponse.expires_in - 60); // 60 segundos de margem de segurança
-         console.log(access_token);
-         console.log(tokenResponse);
+      callback: tokenResponse => {
+         if(tokenResponse.scope == SCOPE){
+            access_token = tokenResponse.access_token;
+            sessionStorage.setItem('secureToken', access_token);
+            sessionStorage.setItem('expireToken', parseInt(Date.now()/1000, 10) + tokenResponse.expires_in - 60); // 60 segundos de margem de segurança
+            console.log(access_token);
+            let page = window.location.pathname.split('/').reverse()[0];
+            if(page == '' || page == 'index.html') window.location.href = 'projects.html';
+         }else{
+            sessionStorage.removeItem('secureToken');
+            sessionStorage.removeItem('expireToken');
+            alert('Autorize todos os escorpos para continuar.');
+         }
       },
    });
 }
@@ -29,17 +36,20 @@ function revokeToken(){
 }
 
 /*
-Gera um novo token de acesso OAuth ou retorna o atual caso ainda esteja válido
+Retorna o token OAuth atual caso ainda esteja válido
 */
-function newToken(){ // Adicionar um timeout para contar o tempo e exibir uma tela para o usuário renovar a sessão. Talvez seja necessário separa esta função em duas partes: uma que retorna o token e outra que de fato requisita um novo token
+function getToken(){
    return new Promise((resolve, reject) => {
       if(sessionStorage.getItem('secureToken') !== null && parseInt(Date.now()/1000, 10) < parseInt(sessionStorage.getItem('expireToken'), 10)){
          access_token = sessionStorage.getItem('secureToken');
          console.log(access_token);
          resolve(sessionStorage.getItem('secureToken'));
-      }else{
-         client.requestAccessToken(); // Esta ação deve partir de um clique do usuário
-         resolve(access_token);
       }
    });
+}
+/*
+Gera um novo token de acesso OAuth
+*/
+function newToken(){
+   client.requestAccessToken();
 }

@@ -226,7 +226,7 @@ function haversineDistance([lat1, lon1], [lat2, lon2]){
 }
 
 function sendPhotosphere(){
-   newToken().then(t => {
+   getToken().then(t => {
       getUploadURL(t).then(uploadUrl => {
          sendImageData(t, 'photo', uploadUrl).then(() => {
             sendMetadata(t, uploadUrl, document.getElementById('latitude').value, document.getElementById('longitude').value);
