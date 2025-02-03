@@ -13,7 +13,7 @@
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script>
          window.addEventListener('load', e => {
-            newToken().then(t => {
+            getToken().then(t => {
                discoverDatabaseID(t).then(r => db = r);
             });
          });

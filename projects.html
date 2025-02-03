@@ -7,7 +7,9 @@
       <link rel="icon" href="favicon.png" type="image/png">
       <script src="auth.js"></script>
       <script src="maps.js"></script>
-      <script src="drive.js"></script><title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
+      <script src="drive.js"></script>
+      <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
+      <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
       <style>
          body,html{
             margin:0;
@@ -125,7 +127,7 @@
             <div class="name">Project Name</div><div class="btns"><span class="edit">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash">✖</span></div>
          </div>
       </div>
-      <div class="new-project">+</div>
+      <div class="new-project" onclick="addProject()">+</div>
       <footer>
          Source Code: <a href="https://github.com/nildopontes/Street-View-Publish-Client">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>
       </footer>
