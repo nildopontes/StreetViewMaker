@@ -5,8 +5,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <!--<link rel="stylesheet" href="/assets/style.css">-->
       <link rel="icon" href="favicon.png" type="image/png">
-      <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script src="auth.js"></script>
+      <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script> <!-- Verificar se o user já está logado e redirecionar para a página projects.html -->
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
       <style>
          body,html{
@@ -75,7 +75,7 @@
       <div id="card">
          <h1>Antes de começar...</h1>
          <p>Use o botão abaixo para se autenticar com sua conta Google.</p>
-         <img src="btn_google_signin.png" alt="google signin button" id="signin" onclick="newToken();">
+         <img src="btn_google_signin.png" alt="google signin button" id="signin" onclick="newToken()">
          <p>
             Este aplicativo permite enviar fotos 360° para o Street View e criar conexões entre elas.<br>
             Suas fotos precisam ter os metadados descritos em <a href="https://developers.google.com/streetview/spherical-metadata?hl=pt-br">Metadados XMP de Photo Spheres</a> para publicação. Além disso deve estar no formato JPEG, possuir no mínimo 7.5MP (3840 x 1920 px), ter no máximo 75MB e estar na proporção 2:1.<br>

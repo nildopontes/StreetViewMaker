@@ -11,7 +11,10 @@
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script>
          window.addEventListener('load', event => {
-            getToken().then(t => discoverDatabaseID(t).then(r => db = r));
+            getToken().then(t => discoverDatabaseID(t).then(r => {
+               db = r;
+               listProjects();
+            }));
          });
       </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
@@ -128,9 +131,6 @@
          <span>Street View Publish Client</span>
       </header>
       <div id="projects">
-         <div class="project">
-            <div class="name">Project Name</div><div class="btns"><span class="edit">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash">✖</span></div>
-         </div>
       </div>
       <div class="new-project" onclick="addProject()">+</div>
       <footer>
