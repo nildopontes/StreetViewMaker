@@ -122,6 +122,7 @@ function addProject(){
          "photos": []
       });
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+      listProjects();
       alert('Projeto criado com sucesso.');
    }
 }
@@ -254,15 +255,18 @@ function removeConnection(photoId1, photoId2, projectName){ // Fazer as alteraç
       alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
    }
 }
-function removeProject(name){
+function removeProject(name){ // adicionar um alerta antes de remover
    db.projects.map((x, i) => {
       if(db.projects[i].name == name){
          if(db.projects[i].photos.length > 0){
             alert('Não é permitido apagar projetos que possuem fotos. Remova todas as fotos antes.');
          }else{
-            db.projects.splice(i, 1);
-            getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
-            alert('Projeto apagado com sucesso');
+            if(window.confirm('Você tem certeza que quer deletar o projeto?')){
+               db.projects.splice(i, 1);
+               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+               listProjects();
+               alert('Projeto apagado com sucesso');
+            }
          }
       }
    });
@@ -282,6 +286,7 @@ function renameProject(currentName){
    });
    if(found > 0){
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+      listProjects();
       alert('Projeto renomeado com sucesso.');
    }else{
       alert('Este projeto não existe.');
