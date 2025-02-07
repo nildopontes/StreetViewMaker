@@ -1,5 +1,5 @@
 var db, map, markers = [], lines = [];
-function initMap(){ // incluir o javascript programaticamente somente depois que receber uma API Key
+function initMap(){
    map = new google.maps.Map(document.getElementById('workspace'), {
       center: { lat: -9.519195, lng: -35.776539 },
       zoom: 15,
@@ -95,6 +95,9 @@ function addPhoto(projectName, idPhoto, lat, lng, photoName){
       }
    });
    if(found == 0) alert('Erro. O projeto não existe.');
+}
+function goToProjects(name){
+   sha1(name).then(r => window.location.href = `project.html?hash=${r}`);
 }
 function listProjects(){
    let projects = '';
@@ -255,7 +258,7 @@ function removeConnection(photoId1, photoId2, projectName){ // Fazer as alteraç
       alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
    }
 }
-function removeProject(name){ // adicionar um alerta antes de remover
+function removeProject(name){
    db.projects.map((x, i) => {
       if(db.projects[i].name == name){
          if(db.projects[i].photos.length > 0){
@@ -291,8 +294,4 @@ function renameProject(currentName){
    }else{
       alert('Este projeto não existe.');
    }
-}
-function changeAPI_KEY(newKey){
-   db.API_KEY = newKey;
-   alert('Nova API_KEY salva com sucesso.');
 }

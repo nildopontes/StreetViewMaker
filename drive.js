@@ -125,7 +125,6 @@ function discoverDatabaseID(token){
                }else{
                   sendMetadata(token).then(path => {
                      let emptyFile = {
-                        "API_KEY": "apikey",
                         "idOnDrive": "idondrive",
                         "projects": []
                      };
