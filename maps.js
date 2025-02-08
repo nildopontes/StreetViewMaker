@@ -8,6 +8,11 @@ function initMap(){
       zoomControl: true,
       mapTypeControl: true,
    });
+   map.addListener('contextmenu', e => {
+      if(window.confirm('Quer adicionar uma foto nesta localização?')){
+         showForm(e.latLng.lat(), e.latLng.lng());
+      }
+   });
 }
 function sha1(message){
    return new Promise((resolve, reject) => {
@@ -73,11 +78,6 @@ function removeLine(data){
       }
    });
 }
-/*window.addEventListener('load', event => { // Definir um uso para este trecho
-   map.addListener('click', function(e){
-      console.log(e.latLng.lat(), e.latLng.lng());
-   });
-});*/
 function showForm(lat, lng){
    document.getElementById('formUpload').style.display = 'block';
    document.getElementById('lat').value = lat;
@@ -85,17 +85,22 @@ function showForm(lat, lng){
 }
 function hideForm(){
    document.getElementById('formUpload').style.display = 'none';
+   document.getElementById('btSend').style.display = 'none';
    document.getElementById('name').value = '';
    document.getElementById('photo').value = '';
+   document.getElementById('lat').value = '';
+   document.getElementById('lng').value = '';
 }
 function submit(){
    if(document.getElementById('photo').value.length == 0 || document.getElementById('name').value.length == 0){
       alert('Preencha todos os campos.');
    }else{
+      document.getElementById('loading').style.display = 'block';
       getToken().then(t => {
          getUploadURL(t).then(uploadUrl => {
             sendImageData(t, 'photo', uploadUrl).then(() => {
                sendMetadata(t, uploadUrl, document.getElementById('lat').value, document.getElementById('lng').value).then(r => {
+                  // Adicionar a foto no DB e sincronizar
                   hideForm();
                   alert('Foto enviada com sucesso;');
                });

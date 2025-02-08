@@ -14,12 +14,18 @@
       <script>
          window.addEventListener('load', e => {
             getToken().then(t => {
-               discoverDatabaseID(t).then(r => db = r);
-            });
-            map.addListener('contextmenu', e => {
-               if(window.confirm('Quer adicionar uma foto nesta localização?')){
-                  showForm(e.latLng.lat(), e.latLng.lng());
-               }
+               discoverDatabaseID(t).then(r => {
+                  db = r;
+                  /*
+const urlParams = new URLSearchParams(window.location.search);
+const myParam = urlParams.get('hash');
+console.log(myParam)
+Comparar o hash da url com o hash do nome do projeto
+                  */
+                  db.projects.map((p => {
+                  if(p.name == projectName){
+                  document.getElementById('projectName').innerText = 'Recuperar nome';
+               });
             });
          });
       </script>
@@ -91,6 +97,15 @@
             left:0;
             display:none;
          }
+         #loading{
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.4);
+            position:fixed;
+            top:0;
+            left:0;
+            display:none;
+         }
          .inputs{
             width:90%;
             height:300px;
@@ -99,6 +114,21 @@
             padding:20px;
             background:white;
             box-sizing:border-box;
+         }
+         .loader{
+            animation:rotating 1s infinite;
+            border:6px solid #e5e5e5;
+            border-radius:50%;
+            border-top-color:#51d4db;
+            height:80px;
+            width:80px;
+            margin:auto;
+            margin-top:calc(50vh - 40px);
+         }
+         @keyframes rotating{
+            to{
+               transform:rotate(1turn);
+            }
          }
       </style>
    </head>
@@ -110,7 +140,7 @@
          <span>Street View Publish Client</span>
       </header>
       <div id="card">
-         <h1>Project Name</h1>
+         <h1 id="projectName"></h1>
          <div id="workspace"></div>
       </div>
       <div id="formUpload">
@@ -123,9 +153,12 @@
             <input id="lat" type="text" disabled><br><br>
             <span>Longitude</span><br>
             <input id="lng" type="text" disabled><br><br>
-            <input type="button" value="Enviar" onclick="submit()">
+            <input id="btSend" type="button" value="Enviar" onclick="submit()">
             <input type="button" value="Cancelar" onclick="hideForm()">
          </div>
+      </div>
+      <div id="loading">
+         <div class="loader"></div>
       </div>
       <footer>
          Source Code: <a href="https://github.com/nildopontes/Street-View-Publish-Client">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>
