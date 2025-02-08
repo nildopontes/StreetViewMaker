@@ -78,6 +78,12 @@ function removeLine(data){
       }
    });
 }
+function showLoading(){
+   document.getElementById('loading').style.display = 'block';
+}
+function hideLoading(){
+   document.getElementById('loading').style.display = 'none';
+}
 function showForm(lat, lng){
    document.getElementById('formUpload').style.display = 'block';
    document.getElementById('lat').value = lat;
@@ -94,7 +100,7 @@ function submit(){
    if(document.getElementById('photo').value.length == 0 || document.getElementById('name').value.length == 0){
       alert('Preencha todos os campos.');
    }else{
-      document.getElementById('loading').style.display = 'block';
+      showLoading();
       getToken().then(t => {
          getUploadURL(t).then(uploadUrl => {
             sendImageData(t, 'photo', uploadUrl).then(() => {
@@ -102,7 +108,7 @@ function submit(){
                   addPhoto(project, r.photoId.id, parseFloat(document.getElementById('lat').value), parseFloat(document.getElementById('lng').value), document.getElementById('name').value);
                   updateFile(t, JSON.stringify(db), db.idOnDrive);
                   hideForm();
-                  alert('Foto enviada com sucesso;');
+                  hideLoading();
                });
             });
          });
