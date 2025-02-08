@@ -56,7 +56,7 @@ function sendImageData(token, data, uploadUrl){
 /*
 Envia os metadados de uma foto no Street View para concluir o upload.
 @param {String} token - o token de acesso OAuth 2.0
-@param {String} uploadUrl - ID de uma foto
+@param {String} uploadUrl - URL retornada pelo método getUploadURL()
 @param {Float} latitude - Latitude do local onde a foto foi registrada  no formato decimal
 @param {Float} longitude - Longitude do local onde a foto foi registrada no formato decimal
 */

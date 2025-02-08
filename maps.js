@@ -73,11 +73,37 @@ function removeLine(data){
       }
    });
 }
-/*window.addEventListener('load', event => { // Definir um uso par este trecho
+/*window.addEventListener('load', event => { // Definir um uso para este trecho
    map.addListener('click', function(e){
       console.log(e.latLng.lat(), e.latLng.lng());
    });
 });*/
+function showForm(lat, lng){
+   document.getElementById('formUpload').style.display = 'block';
+   document.getElementById('lat').value = lat;
+   document.getElementById('lng').value = lng;
+}
+function hideForm(){
+   document.getElementById('formUpload').style.display = 'none';
+   document.getElementById('name').value = '';
+   document.getElementById('photo').value = '';
+}
+function submit(){
+   if(document.getElementById('photo').value.length == 0 || document.getElementById('name').value.length == 0){
+      alert('Preencha todos os campos.');
+   }else{
+      getToken().then(t => {
+         getUploadURL(t).then(uploadUrl => {
+            sendImageData(t, 'photo', uploadUrl).then(() => {
+               sendMetadata(t, uploadUrl, document.getElementById('lat').value, document.getElementById('lng').value).then(r => {
+                  hideForm();
+                  alert('Foto enviada com sucesso;');
+               });
+            });
+         });
+      });
+   }
+}
 function addPhoto(projectName, idPhoto, lat, lng, photoName){
    let found = 0;
    db.projects.map((x, i) => {
@@ -96,7 +122,7 @@ function addPhoto(projectName, idPhoto, lat, lng, photoName){
    });
    if(found == 0) alert('Erro. O projeto não existe.');
 }
-function goToProjects(name){
+function goToProject (name){
    sha1(name).then(r => window.location.href = `project.html?hash=${r}`);
 }
 function listProjects(){

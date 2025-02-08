@@ -16,6 +16,11 @@
             getToken().then(t => {
                discoverDatabaseID(t).then(r => db = r);
             });
+            map.addListener('contextmenu', e => {
+               if(window.confirm('Quer adicionar uma foto nesta localização?')){
+                  showForm(e.latLng.lat(), e.latLng.lng());
+               }
+            });
          });
       </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
@@ -77,6 +82,24 @@
             background:white;
             border-radius:3px;
          }
+         #formUpload{
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.4);
+            position:fixed;
+            top:0;
+            left:0;
+            display:none;
+         }
+         .inputs{
+            width:90%;
+            height:300px;
+            margin:auto;
+            margin-top:calc(50vh - 150px);
+            padding:20px;
+            background:white;
+            box-sizing:border-box;
+         }
       </style>
    </head>
    <body>
@@ -89,6 +112,20 @@
       <div id="card">
          <h1>Project Name</h1>
          <div id="workspace"></div>
+      </div>
+      <div id="formUpload">
+         <div class="inputs">
+            <span>Adicione uma imagem equiretangular</span><br>
+            <input id="photo" type="file" accept="image/jpeg"><br><br>
+            <span>Escolha um nome</span><br>
+            <input id="name" type="text" maxlength="40"><br><br>
+            <span>Latitude</span><br>
+            <input id="lat" type="text" disabled><br><br>
+            <span>Longitude</span><br>
+            <input id="lng" type="text" disabled><br><br>
+            <input type="button" value="Enviar" onclick="submit()">
+            <input type="button" value="Cancelar" onclick="hideForm()">
+         </div>
       </div>
       <footer>
          Source Code: <a href="https://github.com/nildopontes/Street-View-Publish-Client">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>
