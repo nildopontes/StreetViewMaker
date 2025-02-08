@@ -99,7 +99,7 @@ function submit(){
          getUploadURL(t).then(uploadUrl => {
             sendImageData(t, 'photo', uploadUrl).then(() => {
                sendMetadata(t, uploadUrl, document.getElementById('lat').value, document.getElementById('lng').value).then(r => {
-                  addPhoto(project, r.photoId.id, document.getElementById('lat').value, document.getElementById('lng').value, document.getElementById('name').value);
+                  addPhoto(project, r.photoId.id, parseFloat(document.getElementById('lat').value), parseFloat(document.getElementById('lng').value), document.getElementById('name').value);
                   updateFile(t, JSON.stringify(db), db.idOnDrive);
                   hideForm();
                   alert('Foto enviada com sucesso;');

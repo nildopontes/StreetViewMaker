@@ -44,6 +44,10 @@ function getToken(){
          access_token = sessionStorage.getItem('secureToken');
          console.log(access_token);
          resolve(sessionStorage.getItem('secureToken'));
+      }else{
+         sessionStorage.removeItem('secureToken');
+         sessionStorage.removeItem('expireToken');
+         reject('Sessão expirada');
       }
    });
 }
