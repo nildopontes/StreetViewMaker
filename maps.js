@@ -85,7 +85,6 @@ function showForm(lat, lng){
 }
 function hideForm(){
    document.getElementById('formUpload').style.display = 'none';
-   document.getElementById('btSend').style.display = 'none';
    document.getElementById('name').value = '';
    document.getElementById('photo').value = '';
    document.getElementById('lat').value = '';
@@ -100,7 +99,8 @@ function submit(){
          getUploadURL(t).then(uploadUrl => {
             sendImageData(t, 'photo', uploadUrl).then(() => {
                sendMetadata(t, uploadUrl, document.getElementById('lat').value, document.getElementById('lng').value).then(r => {
-                  // Adicionar a foto no DB e sincronizar
+                  addPhoto(project, r.photoId.id, document.getElementById('lat').value, document.getElementById('lng').value, document.getElementById('name').value);
+                  updateFile(t, JSON.stringify(db), db.idOnDrive);
                   hideForm();
                   alert('Foto enviada com sucesso;');
                });

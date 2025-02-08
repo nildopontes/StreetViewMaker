@@ -12,19 +12,21 @@
       <script src="maps.js"></script>
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script>
+         var project;
          window.addEventListener('load', e => {
             getToken().then(t => {
                discoverDatabaseID(t).then(r => {
                   db = r;
-                  /*
-const urlParams = new URLSearchParams(window.location.search);
-const myParam = urlParams.get('hash');
-console.log(myParam)
-Comparar o hash da url com o hash do nome do projeto
-                  */
-                  db.projects.map((p => {
-                  if(p.name == projectName){
-                  document.getElementById('projectName').innerText = 'Recuperar nome';
+                  let params = new URLSearchParams(window.location.search);
+                  let hash = params.get('hash');
+                  db.projects.map(p => {
+                     sha1(p.name).then(h => {
+                        if(h == hash){
+                           project = p.name;
+                           document.getElementById('projectName').innerText = p.name;
+                        }
+                     });
+                  });
                });
             });
          });
@@ -124,6 +126,7 @@ Comparar o hash da url com o hash do nome do projeto
             width:80px;
             margin:auto;
             margin-top:calc(50vh - 40px);
+            user-select:none;
          }
          @keyframes rotating{
             to{
