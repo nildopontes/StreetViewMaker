@@ -181,7 +181,6 @@ function removePhoto(photoId, projectName){ // Fazer as alterações no mapa
                         alert('Foto removida com sucesso.');
                      }
                   }).catch(e => alert(`A foto foi encontrada mas ocorreu um erro ao tentar apagar. ${e}`));
-               
                });
             }
          });
