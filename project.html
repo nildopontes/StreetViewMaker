@@ -26,8 +26,8 @@
                            document.getElementById('projectName').innerText = p.name;
                            p.photos.map(f => {
                               addMarker(f.latLng[0], f.latLng[1], f.name);
+                           // Exibir conexões no mapa
                            });
-                           // Iterar sobre as fotos e exibir marcadores e conexões no mapa
                         }
                      });
                   });

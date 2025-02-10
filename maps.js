@@ -1,8 +1,8 @@
 var db, map, markers = [], lines = [];
 function initMap(){
    map = new google.maps.Map(document.getElementById('workspace'), {
-      center: { lat: -9.519195, lng: -35.776539 },
-      zoom: 15,
+      center: { lat: -9.598392783313042, lng: -35.73571500947498 }, // Antes de fechar ou sair da págino devo capturar o center e o zoom do mapa, atualizar no projeto e sincronizar no DB
+      zoom: 12,
       mapId: "project",
       disableDefaultUI: true,
       zoomControl: true,
@@ -26,7 +26,6 @@ function sha1(message){
 function addMarker(lat, lng, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
-      //position lat: -9.519195, lng: -35.776539
       title: name
    });
    sha1(lat.toString() + lng.toString()).then(digest => {
@@ -50,8 +49,6 @@ function renameMarker(data, newName){
       }
    });
 }
-/* lat:-9.51771430373315, lng:-35.77610951128148}
-   lat:-9.51796825120393, lng:-35.77473622026586} */
 function addLine(lat1, lng1, lat2, lng2){
    let coords = [
       {lat: lat1, lng: lng1},
@@ -159,7 +156,12 @@ function addProject(){
    }else{
       db.projects.push({
          "name": name,
-         "photos": []
+         "photos": [],
+         "zoom": 12,
+         "center": {
+            lat: -9.598392783313042,
+            lng: -35.73571500947498
+         }
       });
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
       listProjects();
