@@ -1,7 +1,7 @@
 var db, map, markers = [], lines = [];
 function initMap(){
    map = new google.maps.Map(document.getElementById('workspace'), {
-      center: { lat: -9.598392783313042, lng: -35.73571500947498 }, // Antes de fechar ou sair da págino devo capturar o center e o zoom do mapa, atualizar no projeto e sincronizar no DB
+      center: { lat: -9.598392783313042, lng: -35.73571500947498 }, // Antes de fechar ou sair da página devo capturar o center e o zoom do mapa, atualizar no projeto e sincronizar no DB
       zoom: 12,
       mapId: "project",
       disableDefaultUI: true,
@@ -23,16 +23,14 @@ function sha1(message){
       });
    });
 }
-function addMarker(lat, lng, name){
+function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
       title: name
    });
-   sha1(lat.toString() + lng.toString()).then(digest => {
-      marker.data = digest;
-      markers.push(marker);
-      marker.setMap(map);
-   });
+   marker.data = id;
+   markers.push(marker);
+   marker.setMap(map);
 }
 function removeMarker(data){
    markers.map((x, i) => {
@@ -49,7 +47,7 @@ function renameMarker(data, newName){
       }
    });
 }
-function addLine(lat1, lng1, lat2, lng2){
+function addLine(lat1, lng1, id1, lat2, lng2, id2){
    let coords = [
       {lat: lat1, lng: lng1},
       {lat: lat2, lng: lng2}
@@ -61,15 +59,14 @@ function addLine(lat1, lng1, lat2, lng2){
       strokeOpacity: 1.0,
       strokeWeight: 8
    });
-   sha1(lat1.toString() + lng1.toString() + lat2.toString() + lng2.toString()).then(digest => {
-      line.data = digest;
-      lines.push(line);
-      line.setMap(map);
-   });
+   line.data = JSON.stringify({"ids": [id1, id2]});
+   lines.push(line);
+   line.setMap(map);
 }
-function removeLine(data){
+function removeLine(id1, id2){
    lines.map((x, i) => {
-      if(lines[i].data == data){
+      let ids = JSON.parse(lines[i].data).ids;
+      if(ids.includes(id1) && ids.includes(id2)){
          lines[i].setMap(null);
          lines.splice(i, 1);
       }
@@ -122,7 +119,7 @@ function addPhoto(projectName, idPhoto, lat, lng, photoName){
             "latLng": [lat, lng],
             "connections": []
          });
-         addMarker(lat, lng, photoName);
+         addMarker(lat, lng, idPhoto, photoName);
          found ++;
          getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
          alert('Foto adicionada com sucesso.');
@@ -168,7 +165,7 @@ function addProject(){
       alert('Projeto criado com sucesso.');
    }
 }
-function removePhoto(photoId, projectName){ // Fazer as alterações no mapa
+function removePhoto(photoId, projectName){
    let found = 0;
    db.projects.map((x, i) => {
       if(db.projects[i].name == projectName){
@@ -197,7 +194,7 @@ function renamePhoto(photoId, newName, projectName){
          db.projects[i].photos.map((y, j) => {
             if(db.projects[i].photos[j].photoId == photoId){
                db.projects[i].photos[j].name = newName;
-               renameMarker(sha1(db.projects[i].photos[j].latLng[0] + db.projects[i].photos[j].latLng[1]), newName);
+               renameMarker(photoId, newName);
                found++;
                getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
                alert('Foto renomeada com sucesso.');
@@ -207,8 +204,8 @@ function renamePhoto(photoId, newName, projectName){
    });
    if(found == 0) alert('A foto não foi encontrada. Verifique se o ID da foto e nome do projeto estão corretos.');
 }
-function addConnection(photoId1, photoId2, projectName){ // Fazer as alterações no mapa 
-   if(photoId1 == photoId2){                        // Criar uma função para definir a prioridade entre photoId1 e photoId2 para decidiar quais coordenadas vão primeiro no cálculo do hash. Devo criar uma lógica com base em algum caractere do ID
+function addConnection(photoId1, photoId2, projectName){
+   if(photoId1 == photoId2){
       alert('É necessário 2 IDs de fotos.');
       return;
    }
@@ -226,21 +223,26 @@ function addConnection(photoId1, photoId2, projectName){ // Fazer as alteraçõe
    if(found == 3){
       db.projects.map((x, i) => {
          if(db.projects[i].name == projectName){
-           // let lat1, lat2, lng1, lng2;
+            let lat1, lat2, lng1, lng2;
             db.projects[i].photos.map((y, j) => {
                if(db.projects[i].photos[j].photoId == photoId1){
                   if(db.projects[i].photos[j].connections.indexOf(photoId2) == -1){
                      db.projects[i].photos[j].connections.push(photoId2);
+                     lat1 = db.projects[i].photos[j].latLng[0];
+                     lng1 = db.projects[i].photos[j].latLng[1];
                      getToken().then(t => updateConnections(t, photoId1, db.projects[i].photos[j].connections));
                   }
                }
                if(db.projects[i].photos[j].photoId == photoId2){
                   if(db.projects[i].photos[j].connections.indexOf(photoId1) == -1){
                      db.projects[i].photos[j].connections.push(photoId1);
+                     lat2 = db.projects[i].photos[j].latLng[0];
+                     lng2 = db.projects[i].photos[j].latLng[1];
                      getToken().then(t => updateConnections(t, photoId2, db.projects[i].photos[j].connections));
                   }
                }
             });
+            addLine(lat1, lng1, photoId1, lat2, lng2, photoId2);
          }
       });
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
@@ -249,9 +251,9 @@ function addConnection(photoId1, photoId2, projectName){ // Fazer as alteraçõe
       alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
    }
 }
-function removeConnection(photoId1, photoId2, projectName){ // Fazer as alterações no mapa
+function removeConnection(photoId1, photoId2, projectName){
    if(photoId1 == photoId2){
-      alert('É necessário 2 ID de fotos diferentes.');
+      alert('São necessário 2 IDs diferentes.');
       return;
    }
    let found = 0;
@@ -288,6 +290,7 @@ function removeConnection(photoId1, photoId2, projectName){ // Fazer as alteraç
                   }
                }
             });
+            removeLine(photoId1, photoId2);
          }
       });
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
@@ -314,7 +317,8 @@ function removeProject(name){
 }
 function renameProject(currentName){
    let newName = prompt('Escolha um nome para o projeto.');
-   if(newName === null || newName.length == 0){
+   if(newName === null) return;
+   if(newName.length == 0){
       alert('O nome precisa ter pelo menos 1 caractere.');
       return;
    }
