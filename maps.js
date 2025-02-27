@@ -1,6 +1,6 @@
 var db, map, markers = [], lines = [];
 function initMap(){
-   map = new google.maps.Map(document.getElementById('workspace'), {
+   map = new google.maps.Map(document.getElementById('workspace'), { // Remover o arquivo DB para efetuar os testes das ultimas modificações
       center: { lat: -9.598392783313042, lng: -35.73571500947498 }, // Antes de fechar ou sair da página devo capturar o center e o zoom do mapa, atualizar no projeto e sincronizar no DB
       zoom: 12,
       mapId: "project",
@@ -47,10 +47,20 @@ function renameMarker(data, newName){
       }
    });
 }
-function addLine(lat1, lng1, id1, lat2, lng2, id2){
+function addLine(lat, lng, id1, id2){
+   let found = false;
+   lines.map((x, i) => {
+      let ids = JSON.parse(lines[i].data).ids;
+      if(ids.includes(id1) && ids.includes(id2)){
+         let newCoord = lines[i].getPath().getArray();
+         newCoord.push({lat: lat, lng: lng});
+         lines[i].setPath(newCoord);
+         found = true;
+      }
+   });
+   if(found) return;
    let coords = [
-      {lat: lat1, lng: lng1},
-      {lat: lat2, lng: lng2}
+      {lat: lat, lng: lng}
    ];
    let line = new google.maps.Polyline({
       path: coords,
@@ -228,21 +238,18 @@ function addConnection(photoId1, photoId2, projectName){
                if(db.projects[i].photos[j].photoId == photoId1){
                   if(db.projects[i].photos[j].connections.indexOf(photoId2) == -1){
                      db.projects[i].photos[j].connections.push(photoId2);
-                     lat1 = db.projects[i].photos[j].latLng[0];
-                     lng1 = db.projects[i].photos[j].latLng[1];
+                     addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
                      getToken().then(t => updateConnections(t, photoId1, db.projects[i].photos[j].connections));
                   }
                }
                if(db.projects[i].photos[j].photoId == photoId2){
                   if(db.projects[i].photos[j].connections.indexOf(photoId1) == -1){
                      db.projects[i].photos[j].connections.push(photoId1);
-                     lat2 = db.projects[i].photos[j].latLng[0];
-                     lng2 = db.projects[i].photos[j].latLng[1];
+                     addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
                      getToken().then(t => updateConnections(t, photoId2, db.projects[i].photos[j].connections));
                   }
                }
             });
-            addLine(lat1, lng1, photoId1, lat2, lng2, photoId2);
          }
       });
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
