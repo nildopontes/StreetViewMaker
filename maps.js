@@ -116,7 +116,7 @@ function submit(){
                });
             });
          });
-      });
+      }).catch(() => alertRedir());
    }
 }
 function addPhoto(projectName, idPhoto, lat, lng, photoName){
@@ -131,7 +131,7 @@ function addPhoto(projectName, idPhoto, lat, lng, photoName){
          });
          addMarker(lat, lng, idPhoto, photoName);
          found ++;
-         getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+         getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
          alert('Foto adicionada com sucesso.');
       }
    });
@@ -170,7 +170,7 @@ function addProject(){
             lng: -35.73571500947498
          }
       });
-      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
       listProjects();
       alert('Projeto criado com sucesso.');
    }
@@ -190,7 +190,7 @@ function removePhoto(photoId, projectName){
                         alert('Foto removida com sucesso.');
                      }
                   }).catch(e => alert(`A foto foi encontrada mas ocorreu um erro ao tentar apagar. ${e}`));
-               });
+               }).catch(() => alertRedir());
             }
          });
       }
@@ -206,7 +206,7 @@ function renamePhoto(photoId, newName, projectName){
                db.projects[i].photos[j].name = newName;
                renameMarker(photoId, newName);
                found++;
-               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
                alert('Foto renomeada com sucesso.');
             }
          });
@@ -239,20 +239,20 @@ function addConnection(photoId1, photoId2, projectName){
                   if(db.projects[i].photos[j].connections.indexOf(photoId2) == -1){
                      db.projects[i].photos[j].connections.push(photoId2);
                      addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
-                     getToken().then(t => updateConnections(t, photoId1, db.projects[i].photos[j].connections));
+                     getToken().then(t => updateConnections(t, photoId1, db.projects[i].photos[j].connections)).catch(() => alertRedir());
                   }
                }
                if(db.projects[i].photos[j].photoId == photoId2){
                   if(db.projects[i].photos[j].connections.indexOf(photoId1) == -1){
                      db.projects[i].photos[j].connections.push(photoId1);
                      addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
-                     getToken().then(t => updateConnections(t, photoId2, db.projects[i].photos[j].connections));
+                     getToken().then(t => updateConnections(t, photoId2, db.projects[i].photos[j].connections)).catch(() => alertRedir());
                   }
                }
             });
          }
       });
-      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
       alert('Conexão criada com sucesso.');
    }else{
       alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
@@ -283,8 +283,8 @@ function removeConnection(photoId1, photoId2, projectName){
                   if(found != -1){
                      db.projects[i].photos[j].connections.splice(found, 1);
                      getToken().then(t => {
-                        updateConnections(t, photoId1, db.projects[i].photos[j].connections);
-                     }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
+                        updateConnections(t, photoId1, db.projects[i].photos[j].connections).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
+                     }).catch(() => alertRedir());
                   }
                }
                if(db.projects[i].photos[j].photoId == photoId2){
@@ -292,15 +292,15 @@ function removeConnection(photoId1, photoId2, projectName){
                   if(found != -1){
                      db.projects[i].photos[j].connections.splice(found, 1);
                      getToken().then(t => {
-                        updateConnections(t, photoId2, db.projects[i].photos[j].connections);
-                     }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
+                        updateConnections(t, photoId2, db.projects[i].photos[j].connections).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
+                     }).catch(() => alertRedir());
                   }
                }
             });
             removeLine(photoId1, photoId2);
          }
       });
-      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
       alert('Conaxão removida com sucesso.')
    }else{
       alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
@@ -314,7 +314,7 @@ function removeProject(name){
          }else{
             if(window.confirm('Você tem certeza que quer deletar o projeto?')){
                db.projects.splice(i, 1);
-               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
                listProjects();
                alert('Projeto apagado com sucesso');
             }
@@ -337,7 +337,7 @@ function renameProject(currentName){
       }
    });
    if(found > 0){
-      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
       listProjects();
       alert('Projeto renomeado com sucesso.');
    }else{

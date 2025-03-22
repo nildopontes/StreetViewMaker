@@ -14,7 +14,7 @@
             getToken().then(t => discoverDatabaseID(t).then(r => {
                db = r;
                listProjects();
-            }));
+            })).catch(() => alertRedir());
          });
       </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>

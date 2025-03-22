@@ -12,18 +12,12 @@ function initClient(){
       scope: SCOPE,
       prompt: '',
       callback: tokenResponse => {
-         if(tokenResponse.scope == SCOPE){
-            access_token = tokenResponse.access_token;
-            sessionStorage.setItem('secureToken', access_token);
-            sessionStorage.setItem('expireToken', parseInt(Date.now()/1000, 10) + tokenResponse.expires_in - 60); // 60 segundos de margem de segurança
-            console.log(access_token);
-            let page = window.location.pathname.split('/').reverse()[0];
-            if(page == '' || page == 'index.html') window.location.href = 'projects.html';
-         }else{
-            sessionStorage.removeItem('secureToken');
-            sessionStorage.removeItem('expireToken');
-            alert('Autorize todos os escorpos para continuar.');
-         }
+         access_token = tokenResponse.access_token;
+         sessionStorage.setItem('secureToken', access_token);
+         sessionStorage.setItem('expireToken', parseInt(Date.now()/1000, 10) + tokenResponse.expires_in - 60); // 60 segundos de margem de segurança
+         console.log(access_token);
+         let page = window.location.pathname.split('/').reverse()[0];
+         if(page == '' || page == 'index.html') window.location.href = 'projects.html';
       },
    });
 }
@@ -34,7 +28,10 @@ Revoga o token de acesso OAuth atual
 function revokeToken(){
    google.accounts.oauth2.revoke(access_token, () => console.log('access token revoked'));
 }
-
+function alertRedir(){
+   alert('Sessão expirada.');
+   window.location.href = 'projects.html';
+}
 /*
 Retorna o token OAuth atual caso ainda esteja válido
 */
@@ -47,7 +44,7 @@ function getToken(){
       }else{
          sessionStorage.removeItem('secureToken');
          sessionStorage.removeItem('expireToken');
-         reject('Sessão expirada');
+         reject();
       }
    });
 }

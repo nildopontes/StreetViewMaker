@@ -232,5 +232,5 @@ function sendPhotosphere(){
             sendMetadata(t, uploadUrl, document.getElementById('latitude').value, document.getElementById('longitude').value);
          });
       });
-   });
+   }).catch(() => alertRedir());
 }

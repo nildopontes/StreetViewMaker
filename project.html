@@ -21,7 +21,7 @@
                      db.projects[i].zoom = map.getZoom();;
                   }
                });
-               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
             }
          });
          window.addEventListener('load', () => {
@@ -47,7 +47,7 @@
                      });
                   });
                });
-            });
+            }).catch(() => alertRedir());
          });
       </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
