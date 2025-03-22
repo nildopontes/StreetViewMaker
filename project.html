@@ -13,12 +13,12 @@
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script>
          var project;
-         document.addEventListener('visibilitychange', () => {
+         document.addEventListener('visibilitychange', () => { // Aplicar essa ação também ao recarregar a página
             if(document.visibilityState === 'hidden'){
                db.projects.map((x, i) => {
-                  if(db.projects[i].name == projectName){
+                  if(db.projects[i].name == project){
                      db.projects[i].center = map.getCenter().toJSON();
-                     db.projects[i].zoom = map.getZoom();;
+                     db.projects[i].zoom = map.getZoom();
                   }
                });
                getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
@@ -38,11 +38,11 @@
                            p.photos.map(f => {
                               addMarker(...f.latLng, f.photoId, f.name);
                               f.connections.map(v => {
-                                 addLine(...f.latLng, f.photoId, v); // Falta testar
+                                 addLine(...f.latLng, f.photoId, v); // Falta testar, falat desenvolver a interface de criar as conexões
                               });
                            });
-                           map.setZoom(p.zoom); // falta testar
-                           map.setCenter(p.center); // falta testar
+                           map.setZoom(p.zoom);
+                           map.setCenter(p.center);
                         }
                      });
                   });
