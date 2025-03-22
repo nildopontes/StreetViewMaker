@@ -1,7 +1,6 @@
 /*
 Envia os metadados dos arquivo para o Google Drive. Somente os metadados.
 @param {String} token - o token de acesso ao GDrive
-@param {String} fileName - o nome do arquivo
 */
 function sendMetadata(token){
    const data = JSON.stringify({

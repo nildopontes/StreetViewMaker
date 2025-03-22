@@ -1,7 +1,7 @@
 var db, map, markers = [], lines = [];
 function initMap(){
-   map = new google.maps.Map(document.getElementById('workspace'), { // Remover o arquivo DB para efetuar os testes das ultimas modificações
-      center: { lat: -9.598392783313042, lng: -35.73571500947498 }, // Antes de fechar ou sair da página devo capturar o center e o zoom do mapa, atualizar no projeto e sincronizar no DB
+   map = new google.maps.Map(document.getElementById('workspace'), {
+      center: { lat: -9.598392783313042, lng: -35.73571500947498 },
       zoom: 12,
       mapId: "project",
       disableDefaultUI: true,

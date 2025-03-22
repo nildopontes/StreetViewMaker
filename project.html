@@ -13,7 +13,18 @@
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script>
          var project;
-         window.addEventListener('load', e => {
+         document.addEventListener('visibilitychange', () => {
+            if(document.visibilityState === 'hidden'){
+               db.projects.map((x, i) => {
+                  if(db.projects[i].name == projectName){
+                     db.projects[i].center = map.getCenter().toJSON();
+                     db.projects[i].zoom = map.getZoom();;
+                  }
+               });
+               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive));
+            }
+         });
+         window.addEventListener('load', () => {
             getToken().then(t => {
                discoverDatabaseID(t).then(r => {
                   db = r;
@@ -30,6 +41,8 @@
                                  addLine(...f.latLng, f.photoId, v); // Falta testar
                               });
                            });
+                           map.setZoom(p.zoom); // falta testar
+                           map.setCenter(p.center); // falta testar
                         }
                      });
                   });
