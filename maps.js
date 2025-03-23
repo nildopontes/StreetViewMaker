@@ -14,6 +14,9 @@ function initMap(){
       }
    });
 }
+function $(id){
+   return document.getElementById(id);
+}
 function sha1(message){
    return new Promise((resolve, reject) => {
       let msgUint8 = new TextEncoder().encode(message);
@@ -39,6 +42,7 @@ function addMarker(lat, lng, id, name){
       };
       document.getElementById('photoRename').onclick = () => {
          renamePhoto(t.target.data, project);
+         // renomear também o marker
          hideMenu();
       };
       document.getElementById('mask').style.display = 'block';
@@ -195,6 +199,7 @@ function addProject(){
    }
 }
 function removePhoto(photoId, projectName){
+   if(!confirm('Tem certeza que deseja apagar essa foto?')) return;
    let found = 0;
    db.projects.map((x, i) => {
       if(db.projects[i].name == projectName){
