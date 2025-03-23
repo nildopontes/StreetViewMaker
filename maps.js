@@ -23,6 +23,9 @@ function sha1(message){
       });
    });
 }
+function hideMenu(){
+   document.getElementById('mask').style.display = 'none';
+}
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
@@ -157,7 +160,9 @@ function listProjects(){
 }
 function addProject(){
    let name = prompt('Escolha um nome para o projeto.');
-   if(name === null || name.length == 0){
+   if(name === null) return;
+   name = name.trim();
+   if(name.length == 0){
       alert('O nome precisa ter pelo menos 1 caractere.');
       return;
    }
