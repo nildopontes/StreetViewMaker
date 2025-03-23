@@ -30,7 +30,8 @@ function addMarker(lat, lng, id, name){
    });
    marker.data = id;
    marker.addEventListener('contextmenu', t => {
-      console.log(t.target.data); //== marker.data Exibir aqui a interface para fazer alterações nos dados da foto e seu respectivo marker
+      //t.target.data faz referência à foto para possiveis ações
+      document.getElementById('mask').style.display = 'block';
       document.getElementById('menu').style.left = t.clientX + 'px';
       document.getElementById('menu').style.top = t.clientY + 'px';
       t.stopPropagation();
