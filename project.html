@@ -23,7 +23,9 @@
             getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
          }
          document.addEventListener('beforeunload', updateZoomAndCenter());
-         document.addEventListener('visibilitychange', () => if(document.visibilityState === 'hidden') updateZoomAndCenter());
+         document.addEventListener('visibilitychange', () => {
+            if(document.visibilityState === 'hidden') updateZoomAndCenter();
+         });
          window.addEventListener('load', () => {
             getToken().then(t => {
                discoverDatabaseID(t).then(r => {
