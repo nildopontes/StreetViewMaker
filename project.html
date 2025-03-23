@@ -118,7 +118,7 @@
             left:0;
             display:none;
          }
-         #loading{
+         .bgMask{
             width:100%;
             height:100%;
             background:rgba(0,0,0,0.4);
@@ -126,6 +126,18 @@
             top:0;
             left:0;
             display:none;
+         }
+         #menu{
+            position:relative;
+            top:0;
+            left:0;
+            width:100px;
+            height:50px;
+            background:white;
+         }
+         .item{
+            width:100%;
+            height:20px;
          }
          .inputs{
             width:90%;
@@ -179,8 +191,14 @@
             <input type="button" value="Cancelar" onclick="hideForm()">
          </div>
       </div>
-      <div id="loading">
+      <div id="loading" class="bgMask">
          <div class="loader"></div>
+      </div>
+      <div id="mask" class="bgMask">
+         <div id="menu">
+            <div class="item">Del</div>
+            <div class="item">Edit</div>
+         </div>
       </div>
       <footer>
          Source Code: <a href="https://github.com/nildopontes/Street-View-Publish-Client">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>

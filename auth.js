@@ -30,7 +30,7 @@ function revokeToken(){
 }
 function alertRedir(){
    alert('Sessão expirada.');
-   window.location.href = 'projects.html';
+   window.location.href = 'index.html';
 }
 /*
 Retorna o token OAuth atual caso ainda esteja válido
