@@ -42,7 +42,6 @@ function addMarker(lat, lng, id, name){
       };
       document.getElementById('photoRename').onclick = () => {
          renamePhoto(t.target.data, project);
-         // renomear também o marker
          hideMenu();
       };
       document.getElementById('mask').style.display = 'block';
@@ -198,7 +197,7 @@ function addProject(){
       alert('Projeto criado com sucesso.');
    }
 }
-function removePhoto(photoId, projectName){
+function removePhoto(photoId, projectName){ // Falta testar a remorção do marker, preciso antes fazer o upload de um foto pra testar o efeito
    if(!confirm('Tem certeza que deseja apagar essa foto?')) return;
    let found = 0;
    db.projects.map((x, i) => {
@@ -211,6 +210,7 @@ function removePhoto(photoId, projectName){
                      if(r === true){
                         db.projects[i].photos[j].splice(j, 1);
                         updateFile(t, JSON.stringify(db), db.idOnDrive);
+                        removeMarker(photoId);
                         alert('Foto removida com sucesso.');
                      }
                   }).catch(e => alert(`A foto foi encontrada mas ocorreu um erro ao tentar apagar. ${e}`));
