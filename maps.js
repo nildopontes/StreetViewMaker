@@ -33,7 +33,14 @@ function addMarker(lat, lng, id, name){
    });
    marker.data = id;
    marker.addEventListener('contextmenu', t => {
-      //t.target.data faz referência à foto para possiveis ações
+      document.getElementById('photoTrash').onclick = () => {
+         removePhoto(t.target.data, project);
+         hideMenu();
+      };
+      document.getElementById('photoRename').onclick = () => {
+         renamePhoto(t.target.data, project);
+         hideMenu();
+      };
       document.getElementById('mask').style.display = 'block';
       document.getElementById('menu').style.left = t.clientX + 'px';
       document.getElementById('menu').style.top = t.clientY + 'px';
@@ -209,7 +216,14 @@ function removePhoto(photoId, projectName){
    });
    if(found == 0) alert('A foto não foi encontrada. Verifique se o ID da foto e nome do projeto estão corretos.');
 }
-function renamePhoto(photoId, newName, projectName){
+function renamePhoto(photoId, projectName){
+   let newName = prompt('Escolha um nome para a foto.');
+   if(newName === null) return;
+   newName = newName.trim();
+   if(newName.length == 0){
+      alert('O nome precisa ter pelo menos 1 caractere.');
+      return;
+   }
    let found = 0;
    db.projects.map((x, i) => {
       if(db.projects[i].name == projectName){
@@ -337,6 +351,7 @@ function removeProject(name){
 function renameProject(currentName){
    let newName = prompt('Escolha um nome para o projeto.');
    if(newName === null) return;
+   newName = newName.trim();
    if(newName.length == 0){
       alert('O nome precisa ter pelo menos 1 caractere.');
       return;
