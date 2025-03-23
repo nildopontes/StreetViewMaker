@@ -13,20 +13,21 @@
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <script>
          var project;
-         let updateZoomAndCenter;
+         document.addEventListener('visibilitychange', () => { // acionar esta ação também quando o usuário tentar sair da página
+            if(document.visibilityState === 'hidden'){
+               db.projects.map((x, i) => {
+                  if(db.projects[i].name == project){
+                     db.projects[i].center = map.getCenter().toJSON();
+                     db.projects[i].zoom = map.getZoom();
+                  }
+               });
+               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
+            };
+         });
          window.addEventListener('load', () => {
             getToken().then(t => {
                discoverDatabaseID(t).then(r => {
                   db = r;
-                  updateZoomAndCenter = function(){
-                     db.projects.map((x, i) => {
-                        if(db.projects[i].name == project){
-                           db.projects[i].center = map.getCenter().toJSON();
-                           db.projects[i].zoom = map.getZoom();
-                        }
-                     });
-                     getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
-                  }
                   let params = new URLSearchParams(window.location.search);
                   let hash = params.get('hash');
                   db.projects.map(p => {
@@ -37,17 +38,13 @@
                            p.photos.map(f => {
                               addMarker(...f.latLng, f.photoId, f.name);
                               f.connections.map(v => {
-                                 addLine(...f.latLng, f.photoId, v); // Falta testar, falat desenvolver a interface de criar as conexões
+                                 addLine(...f.latLng, f.photoId, v); // Falta testar, falta desenvolver a interface de criar as conexões
                               });
                            });
                            map.setZoom(p.zoom);
                            map.setCenter(p.center);
                         }
                      });
-                  });
-                  document.addEventListener('beforeunload', updateZoomAndCenter());
-                  document.addEventListener('visibilitychange', () => {
-                     if(document.visibilityState === 'hidden') updateZoomAndCenter();
                   });
                });
             }).catch(() => alertRedir());
