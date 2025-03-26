@@ -38,7 +38,7 @@
                            p.photos.map(f => {
                               addMarker(...f.latLng, f.photoId, f.name);
                               f.connections.map(v => {
-                                 addLine(...f.latLng, f.photoId, v); // Falta testar, falta desenvolver a interface de criar as conexões
+                                 addLine(...f.latLng, f.photoId, v); // Falta testar, antes precisa desenvolver a interface de criar as conexões
                               });
                            });
                            map.setZoom(p.zoom);
@@ -136,6 +136,14 @@
             height:60px;
             background:white;
          }
+         #submenu{
+            position:relative;
+            top:0;
+            left:0;
+            width:100px;
+            height:100px;
+            background:white;
+         }
          .item{
             width:100%;
             height:20px;
@@ -196,10 +204,16 @@
          <div class="loader"></div>
       </div>
       <div id="mask" class="bgMask">
-         <div id="menu">
+         <div id="menu"> <!-- Precisa trabalhar no estilo da interface -->
             <div class="item" id="photoTrash">✖ Excluir</div>
             <div class="item" id="photoRename">✎ Renomear</div>
+            <div class="item" id="photoConnections">🔗 Conexões</div>
             <div class="item" onclick="hideMenu()">← Voltar</div>
+         </div>
+         <div id="submenu">
+            <div class="item">Item1</div>
+            <div class="item">Item2</div>
+            <div class="item">Item3</div>
          </div>
       </div>
       <footer>

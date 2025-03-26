@@ -51,6 +51,6 @@ function getToken(){
 /*
 Gera um novo token de acesso OAuth
 */
-function newToken(){
+function newToken(){ // Criar um timeout para exibir um pedido de renovação da sessão a cada 60 minutos, antes que o token expire
    client.requestAccessToken();
 }
