@@ -40,9 +40,21 @@ function addMarker(lat, lng, id, name){
          removePhoto(t.target.data, project);
          hideMenu();
       };
+      document.getElementById('photoRename').onclick = () => {
+         renamePhoto(t.target.data, project);
+         hideMenu();
+      };
       document.getElementById('photoConnections').addEventListener('click', n => {
-         let states = ['block',,,,'block','none'];
-         document.getElementById('submenu').style.display = states[document.getElementById('submenu').style.display.length];
+         db.projects.map((x, i) => {
+            if(db.projects[i].name == project){
+               let items = '';
+               db.projects[i].photos.map(p => {
+                  if(p.photoId != t.target.data) items += '<div class="item">Item1</div>';
+               });
+               document.getElementById('submenu').innerHTML = items;
+            }
+         });
+         document.getElementById('submenu').style.display = ['block',,,,'block','none'][document.getElementById('submenu').style.display.length];
          document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
          document.getElementById('submenu').style.top = n.clientY + 'px';
       });
