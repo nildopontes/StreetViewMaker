@@ -59,7 +59,7 @@ function addMarker(lat, lng, id, name){
          document.getElementById('submenu').style.display = states[document.getElementById('submenu').style.display.length];
          document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
          document.getElementById('submenu').style.top = t.clientY + 50 + 'px';
-      });
+      };
       document.getElementById('mask').style.display = 'block';
       document.getElementById('menu').style.left = t.clientX + 'px';
       document.getElementById('menu').style.top = t.clientY + 'px';
