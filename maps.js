@@ -41,8 +41,8 @@ function addMarker(lat, lng, id, name){
          hideMenu();
       };
       document.getElementById('photoConnections').onclick = () => {
-         document.getElementById('submenu').style.left = t.clientX + 100 + 'px';
-         document.getElementById('submenu').style.top = t.clientY + 50 + 'px';
+         document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
+         document.getElementById('submenu').style.top = t.clientY + 40 + 'px';
       };
       document.getElementById('mask').style.display = 'block';
       document.getElementById('menu').style.left = t.clientX + 'px';
