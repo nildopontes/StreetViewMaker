@@ -44,7 +44,7 @@ function addMarker(lat, lng, id, name){
          renamePhoto(t.target.data, project);
          hideMenu();
       };
-      document.getElementById('photoConnections').addEventListener('click', n => {
+      document.getElementById('photoConnections').onclick = () => {
          db.projects.map((x, i) => {
             if(db.projects[i].name == project){
                let items = '';
@@ -58,7 +58,7 @@ function addMarker(lat, lng, id, name){
          console.log(states[document.getElementById('submenu').style.display.length]);
          document.getElementById('submenu').style.display = states[document.getElementById('submenu').style.display.length];
          document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
-         document.getElementById('submenu').style.top = n.clientY + 'px';
+         document.getElementById('submenu').style.top = t.clientY + 50 + 'px';
       });
       document.getElementById('mask').style.display = 'block';
       document.getElementById('menu').style.left = t.clientX + 'px';
