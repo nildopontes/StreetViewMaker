@@ -41,7 +41,7 @@ function addMarker(lat, lng, id, name){
          hideMenu();
       };
       document.getElementById('photoConnections').addEventListener('click', n => {
-         let states = [,,,,'block', 'none'];
+         let states = ['block',,,,'block','none'];
          document.getElementById('submenu').style.display = states[document.getElementById('submenu').style.display.length];
          document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
          document.getElementById('submenu').style.top = n.clientY + 'px';
