@@ -40,7 +40,7 @@ function addMarker(lat, lng, id, name){
          removePhoto(t.target.data, project);
          hideMenu();
       };
-      document.getElementById('photoConnections').onclick = n => {
+      document.getElementById('photoConnections').addEventListener('click', n => {
          document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
          document.getElementById('submenu').style.top = n.clientY + 'px';
       };
