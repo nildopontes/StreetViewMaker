@@ -40,9 +40,9 @@ function addMarker(lat, lng, id, name){
          removePhoto(t.target.data, project);
          hideMenu();
       };
-      document.getElementById('photoConnections').onclick = () => {
+      document.getElementById('photoConnections').onclick = n => {
          document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
-         document.getElementById('submenu').style.top = t.clientY + 40 + 'px';
+         document.getElementById('submenu').style.top = n.clientY + 'px';
       };
       document.getElementById('mask').style.display = 'block';
       document.getElementById('menu').style.left = t.clientX + 'px';
