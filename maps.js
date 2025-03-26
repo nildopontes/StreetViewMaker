@@ -54,7 +54,9 @@ function addMarker(lat, lng, id, name){
                document.getElementById('submenu').innerHTML = items;
             }
          });
-         document.getElementById('submenu').style.display = ['block',,,,'block','none'][document.getElementById('submenu').style.display.length];
+         let states = ['block',,,,'block','none'];
+         console.log(states[document.getElementById('submenu').style.display.length]);
+         document.getElementById('submenu').style.display = states[document.getElementById('submenu').style.display.length];
          document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
          document.getElementById('submenu').style.top = n.clientY + 'px';
       });
