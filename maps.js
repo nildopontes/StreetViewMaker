@@ -43,7 +43,7 @@ function addMarker(lat, lng, id, name){
       document.getElementById('photoConnections').addEventListener('click', n => {
          document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
          document.getElementById('submenu').style.top = n.clientY + 'px';
-      };
+      });
       document.getElementById('mask').style.display = 'block';
       document.getElementById('menu').style.left = t.clientX + 'px';
       document.getElementById('menu').style.top = t.clientY + 'px';
