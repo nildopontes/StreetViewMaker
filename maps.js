@@ -17,15 +17,6 @@ function initMap(){
 function $(id){
    return document.getElementById(id);
 }
-function sha1(message){
-   return new Promise((resolve, reject) => {
-      let msgUint8 = new TextEncoder().encode(message);
-      window.crypto.subtle.digest('SHA-256', msgUint8).then(hashBuffer => {
-         let hashArray = Array.from(new Uint8Array(hashBuffer));
-         resolve(hashArray.map(b => b.toString(16).padStart(2, '0')).join(''));
-      });
-   });
-}
 function hideMenu(){
    $('mask').style.display = 'none';
    $('submenu').style.display = 'none';
@@ -173,13 +164,10 @@ function addPhoto(projectName, idPhoto, lat, lng, photoName){
    });
    if(found == 0) alert('Erro. O projeto não existe.');
 }
-function goToProject (name){
-   sha1(name).then(r => window.location.href = `project.html?hash=${r}`);
-}
 function listProjects(){
    let projects = '';
    db.projects.map(x => {
-      projects += `<div class="project"><div class="name" onclick="goToProject('${x.name}')">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span></div></div>`;
+      projects += `<div class="project"><div class="name" onclick="window.location.href = project.html?p=${encodeURIComponent(x.name)}">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span></div></div>`;
    });
    $('projects').innerHTML = projects;
    

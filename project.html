@@ -29,22 +29,19 @@
                discoverDatabaseID(t).then(r => {
                   db = r;
                   let params = new URLSearchParams(window.location.search);
-                  let hash = params.get('hash');
+                  project = decodeURIComponent(params.get('p')); // Limitar os caracteres permitidos nos nomes de fotos e projetos para não precisar usar decodeURIComponent()
                   db.projects.map(p => {
-                     sha1(p.name).then(h => {
-                        if(h == hash){
-                           project = p.name;
-                           document.getElementById('projectName').innerText = p.name;
-                           p.photos.map(f => {
-                              addMarker(...f.latLng, f.photoId, f.name);
-                              f.connections.map(v => {
-                                 addLine(...f.latLng, f.photoId, v); // Falta testar, antes precisa desenvolver a interface de criar as conexões
-                              });
+                     if(p.name == project){
+                        document.getElementById('projectName').innerText = p.name;
+                        p.photos.map(f => {
+                           addMarker(...f.latLng, f.photoId, f.name);
+                           f.connections.map(v => {
+                              addLine(...f.latLng, f.photoId, v); // Falta testar, antes precisa desenvolver a interface de criar as conexões
                            });
-                           map.setZoom(p.zoom);
-                           map.setCenter(p.center);
-                        }
-                     });
+                        });
+                        map.setZoom(p.zoom);
+                        map.setCenter(p.center);
+                     };
                   });
                });
             }).catch(() => alertRedir());
