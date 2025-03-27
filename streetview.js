@@ -103,7 +103,7 @@ function updateConnections(token, photoId, connections){
       "connections": []
    };
    connections.map(x => {
-      connections.push({
+      data.connections.push({
          "target": {
             "id": x
          }
