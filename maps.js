@@ -44,7 +44,7 @@ function addMarker(lat, lng, id, name){
             if(db.projects[i].name == project){
                let items = '';
                db.projects[i].photos.map(p => {
-                  if(p.photoId != t.target.data) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'selected' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
+                  if(p.photoId != t.target.data) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
                });
                $('submenu').innerHTML = items;
             }
