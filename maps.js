@@ -1,6 +1,6 @@
 var db, map, markers = [], lines = [];
 function initMap(){
-   map = new google.maps.Map(document.getElementById('workspace'), {
+   map = new google.maps.Map($('workspace'), {
       center: { lat: -9.598392783313042, lng: -35.73571500947498 },
       zoom: 12,
       mapId: "project",
@@ -27,7 +27,8 @@ function sha1(message){
    });
 }
 function hideMenu(){
-   document.getElementById('mask').style.display = 'none';
+   $('mask').style.display = 'none';
+   $('submenu').style.display = 'none';
 }
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
@@ -36,33 +37,32 @@ function addMarker(lat, lng, id, name){
    });
    marker.data = id;
    marker.addEventListener('contextmenu', t => {
-      document.getElementById('photoTrash').onclick = () => {
+      $('photoTrash').onclick = () => {
          removePhoto(t.target.data, project);
          hideMenu();
       };
-      document.getElementById('photoRename').onclick = () => {
+      $('photoRename').onclick = () => {
          renamePhoto(t.target.data, project);
          hideMenu();
       };
-      document.getElementById('photoConnections').onclick = () => {
+      $('photoConnections').onclick = () => {
          db.projects.map((x, i) => {
             if(db.projects[i].name == project){
                let items = '';
                db.projects[i].photos.map(p => {
-                  if(p.photoId != t.target.data) items += '<div class="item">Item1</div>';
+                  if(p.photoId != t.target.data) items += `<div class="item"><input type="checkbox" id="${p.photoId}"/><label for="${p.photoId}">${p.name}</label></div>`;
                });
-               document.getElementById('submenu').innerHTML = items;
+               $('submenu').innerHTML = items;
             }
          });
          let states = ['block',,,,'block','none'];
-         console.log(states[document.getElementById('submenu').style.display.length]);
-         document.getElementById('submenu').style.display = states[document.getElementById('submenu').style.display.length];
-         document.getElementById('submenu').style.left = t.clientX + 104 + 'px';
-         document.getElementById('submenu').style.top = t.clientY + 50 + 'px';
+         $('submenu').style.display = states[$('submenu').style.display.length];
+         $('submenu').style.left = t.clientX + 104 + 'px';
+         $('submenu').style.top = t.clientY + 50 + 'px';
       };
-      document.getElementById('mask').style.display = 'block';
-      document.getElementById('menu').style.left = t.clientX + 'px';
-      document.getElementById('menu').style.top = t.clientY + 'px';
+      $('mask').style.display = 'block';
+      $('menu').style.left = t.clientX + 'px';
+      $('menu').style.top = t.clientY + 'px';
       t.stopPropagation();
    });
    markers.push(marker);
@@ -119,33 +119,33 @@ function removeLine(id1, id2){
    });
 }
 function showLoading(){
-   document.getElementById('loading').style.display = 'block';
+   $('loading').style.display = 'block';
 }
 function hideLoading(){
-   document.getElementById('loading').style.display = 'none';
+   $('loading').style.display = 'none';
 }
 function showForm(lat, lng){
-   document.getElementById('formUpload').style.display = 'block';
-   document.getElementById('lat').value = lat;
-   document.getElementById('lng').value = lng;
+   $('formUpload').style.display = 'block';
+   $('lat').value = lat;
+   $('lng').value = lng;
 }
 function hideForm(){
-   document.getElementById('formUpload').style.display = 'none';
-   document.getElementById('name').value = '';
-   document.getElementById('photo').value = '';
-   document.getElementById('lat').value = '';
-   document.getElementById('lng').value = '';
+   $('formUpload').style.display = 'none';
+   $('name').value = '';
+   $('photo').value = '';
+   $('lat').value = '';
+   $('lng').value = '';
 }
 function submit(){
-   if(document.getElementById('photo').value.length == 0 || document.getElementById('name').value.length == 0){
+   if($('photo').value.length == 0 || $('name').value.length == 0){
       alert('Preencha todos os campos.');
    }else{
       showLoading();
       getToken().then(t => {
          getUploadURL(t).then(uploadUrl => {
             sendImageData(t, 'photo', uploadUrl).then(() => {
-               sendMetadata(t, uploadUrl, document.getElementById('lat').value, document.getElementById('lng').value).then(r => {
-                  addPhoto(project, r.photoId.id, parseFloat(document.getElementById('lat').value), parseFloat(document.getElementById('lng').value), document.getElementById('name').value);
+               sendMetadata(t, uploadUrl, $('lat').value, $('lng').value).then(r => {
+                  addPhoto(project, r.photoId.id, parseFloat($('lat').value), parseFloat($('lng').value), $('name').value);
                   updateFile(t, JSON.stringify(db), db.idOnDrive);
                   hideForm();
                   hideLoading();
@@ -181,7 +181,7 @@ function listProjects(){
    db.projects.map(x => {
       projects += `<div class="project"><div class="name" onclick="goToProject('${x.name}')">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span></div></div>`;
    });
-   document.getElementById('projects').innerHTML = projects;
+   $('projects').innerHTML = projects;
    
 }
 function addProject(){
