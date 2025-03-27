@@ -21,6 +21,9 @@ function hideMenu(){
    $('mask').style.display = 'none';
    $('submenu').style.display = 'none';
 }
+function checkboxClick(id, idConnection){
+   $(id).checked ? addConnection(id, idConnection, project) : addConnection(id, idConnection, project);
+}
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
@@ -41,7 +44,7 @@ function addMarker(lat, lng, id, name){
             if(db.projects[i].name == project){
                let items = '';
                db.projects[i].photos.map(p => {
-                  if(p.photoId != t.target.data) items += `<div class="item"><input type="checkbox" id="${p.photoId}"/><label for="${p.photoId}">${p.name}</label></div>`;
+                  if(p.photoId != t.target.data) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, t.target.data)" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'selected' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
                });
                $('submenu').innerHTML = items;
             }
@@ -136,7 +139,7 @@ function submit(){
          getUploadURL(t).then(uploadUrl => {
             sendImageData(t, 'photo', uploadUrl).then(() => {
                sendMetadata(t, uploadUrl, $('lat').value, $('lng').value).then(r => {
-                  addPhoto(project, r.photoId.id, parseFloat($('lat').value), parseFloat($('lng').value), $('name').value);
+                  addPhoto(project, r.photoId.id, parseFloat($('lat').value), parseFloat($('lng').value), $('name').value.trim());
                   updateFile(t, JSON.stringify(db), db.idOnDrive);
                   hideForm();
                   hideLoading();
@@ -167,10 +170,9 @@ function addPhoto(projectName, idPhoto, lat, lng, photoName){
 function listProjects(){
    let projects = '';
    db.projects.map(x => {
-      projects += `<div class="project"><div class="name" onclick="window.location.href = project.html?p=${encodeURIComponent(x.name)}">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span></div></div>`;
+      projects += `<div class="project"><div class="name" onclick="window.location.href = 'project.html?p=${encodeURIComponent(x.name)}'">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span></div></div>`;
    });
    $('projects').innerHTML = projects;
-   
 }
 function addProject(){
    let name = prompt('Escolha um nome para o projeto.');
