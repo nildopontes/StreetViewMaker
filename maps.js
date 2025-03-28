@@ -210,11 +210,11 @@ function removePhoto(photoId){
       if(db.projects[i].name == project){
          db.projects[i].photos.map((y, j) => {
             if(db.projects[i].photos[j].photoId == photoId){
+               found++;
                if(db.projects[i].photos[j].connections.length > 0){
                   alert('Desfaça as conexões antes de remover esta foto.');
                   return;
                }
-               found++;
                getToken().then(t => {
                   deletePhoto(t, photoId).then(r => {
                      if(r === true){
