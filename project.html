@@ -29,14 +29,14 @@
                discoverDatabaseID(t).then(r => {
                   db = r;
                   let params = new URLSearchParams(window.location.search);
-                  project = decodeURIComponent(params.get('p')); // Limitar os caracteres permitidos nos nomes de fotos e projetos para não precisar usar decodeURIComponent()
+                  project = decodeURIComponent(params.get('p'));
                   db.projects.map(p => {
                      if(p.name == project){
                         document.getElementById('projectName').innerText = p.name;
                         p.photos.map(f => {
                            addMarker(...f.latLng, f.photoId, f.name);
                            f.connections.map(v => {
-                              addLine(...f.latLng, f.photoId, v); // Falta testar, antes precisa desenvolver a interface de criar as conexões
+                              addLine(...f.latLng, f.photoId, v);
                            });
                         });
                         map.setZoom(p.zoom);

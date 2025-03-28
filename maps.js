@@ -203,13 +203,17 @@ function addProject(){
       alert('Projeto criado com sucesso.');
    }
 }
-function removePhoto(photoId){ // Impedir a remoção de fotos que possuem conexões.
+function removePhoto(photoId){
    if(!confirm('Tem certeza que deseja apagar essa foto?')) return;
    let found = 0;
    db.projects.map((x, i) => {
       if(db.projects[i].name == project){
          db.projects[i].photos.map((y, j) => {
             if(db.projects[i].photos[j].photoId == photoId){
+               if(db.projects[i].photos[j].connections.length > 0){
+                  alert('Desfaça as conexões antes de remover esta foto.');
+                  return;
+               }
                found++;
                getToken().then(t => {
                   deletePhoto(t, photoId).then(r => {
@@ -275,15 +279,17 @@ function addConnection(photoId1, photoId2){
                   if(db.projects[i].photos[j].photoId == photoId1){
                      if(db.projects[i].photos[j].connections.indexOf(photoId2) == -1){
                         db.projects[i].photos[j].connections.push(photoId2);
-                        addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
-                        updateConnections(t, photoId1, db.projects[i].photos[j].connections); // Tratar o retorno de updateConnections
+                        updateConnections(t, photoId1, db.projects[i].photos[j].connections).then(v => {
+                           addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
+                        }).catch(e => alert(`Ocorreu um erro: ${e}`));
                      }
                   }
                   if(db.projects[i].photos[j].photoId == photoId2){
                      if(db.projects[i].photos[j].connections.indexOf(photoId1) == -1){
                         db.projects[i].photos[j].connections.push(photoId1);
-                        addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
-                        updateConnections(t, photoId2, db.projects[i].photos[j].connections); // Tratar o retorno de updateConnections
+                        updateConnections(t, photoId2, db.projects[i].photos[j].connections).then(v => {
+                           addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
+                        }).catch(e => alert(`Ocorreu um erro: ${e}`));
                      }
                   }
                }).catch(() => alertRedir());
