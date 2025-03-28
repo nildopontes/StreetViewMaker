@@ -22,7 +22,7 @@ function hideMenu(){
    $('submenu').style.display = 'none';
 }
 function checkboxClick(id, idConnection){
-   $(id).checked ? addConnection(id, idConnection) : addConnection(id, idConnection);
+   $(id).checked ? addConnection(id, idConnection) : removeConnection(id, idConnection);
 }
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
@@ -203,7 +203,7 @@ function addProject(){
       alert('Projeto criado com sucesso.');
    }
 }
-function removePhoto(photoId){ // Falta testar a remorção do marker, preciso antes fazer o upload de um foto pra testar o efeito
+function removePhoto(photoId){ // Impedir a remoção de fotos que possuem conexões.
    if(!confirm('Tem certeza que deseja apagar essa foto?')) return;
    let found = 0;
    db.projects.map((x, i) => {
