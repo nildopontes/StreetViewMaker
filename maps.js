@@ -214,7 +214,7 @@ function removePhoto(photoId){ // Falta testar a remorção do marker, preciso a
                getToken().then(t => {
                   deletePhoto(t, photoId).then(r => {
                      if(r === true){
-                        db.projects[i].photos[j].splice(j, 1);
+                        db.projects[i].photos.splice(j, 1);
                         updateFile(t, JSON.stringify(db), db.idOnDrive);
                         removeMarker(photoId);
                         alert('Foto removida com sucesso.');
