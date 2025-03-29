@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!--<link rel="stylesheet" href="/assets/style.css">-->
+      <link rel="stylesheet" href="style.css">
       <link rel="icon" href="favicon.png" type="image/png">
       <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRzz4DAjtabVvXOyI3i5mLSYXjYhbFqS8&loading=async&callback=initMap&libraries=marker"></script>
       <script src="auth.js"></script>
@@ -49,58 +49,6 @@
       </script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
       <style>
-         body,html{
-            margin:0;
-            padding:0;
-            background:#111;
-            min-height:100vh;
-            font-family:Helvetica;
-            user-select:none;
-         }
-         header{
-            width:100%;
-            height:60px;
-            background:#2196f3;
-            font-family:Helvetica;
-            font-size:20px;
-            line-height:60px;
-            color:white;
-         }
-         #icon{
-            width:50px;
-            height:50px;
-            margin-top:5px;
-            margin-right:15px;
-            margin-left:15px;
-            float:left;
-            border-radius:50%;
-            overflow:hidden;
-         }
-         #icon>img{
-            height:100%;
-         }
-         footer{
-            width:100%;
-            height:30px;
-            font-size:15px;
-            line-height:30px;
-            color:white;
-            text-align:center;
-         }
-         a:link,a:visited{
-            color:#ff4081;
-            text-decoration:none;
-         }
-         #card{
-            width:90%;
-            margin:5%;
-            border-radius:10px;
-            box-sizing:border-box;
-            padding:10px;
-            background:#444;
-            font-size:15px;
-            color:white;
-         }
          #workspace{
             width:100%;
             height:500px;
@@ -181,7 +129,7 @@
          </div>
          <span>Street View Publish Client</span>
       </header>
-      <div id="card">
+      <div class="card">
          <h1 id="projectName"></h1>
          <div id="workspace"></div>
       </div>
@@ -212,8 +160,5 @@
          <div id="submenu">
          </div>
       </div>
-      <footer>
-         Source Code: <a href="https://github.com/nildopontes/Street-View-Publish-Client">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>
-      </footer>
    </body>
 </html>
