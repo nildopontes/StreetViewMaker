@@ -279,6 +279,7 @@ function addConnection(photoId1, photoId2){
          if(db.projects[i].name == project){
             db.projects[i].photos.map((y, j) => {
                getToken().then(t => {
+                  let error = false;
                   if(db.projects[i].photos[j].photoId == photoId1){
                      if(db.projects[i].photos[j].connections.indexOf(photoId2) == -1){
                         db.projects[i].photos[j].connections.push(photoId2);
@@ -287,18 +288,18 @@ function addConnection(photoId1, photoId2){
                         }).catch(e => {
                            db.projects[i].photos[j].connections.pop();
                            $(photoId2).checked = false;
+                           error = true;
                            alert(`${e} Aguarde 1 minuto e tente novamente.`);
                         });
                      }
                   }
-                  if(db.projects[i].photos[j].photoId == photoId2){
+                  if(db.projects[i].photos[j].photoId == photoId2 && !error){
                      if(db.projects[i].photos[j].connections.indexOf(photoId1) == -1){
                         db.projects[i].photos[j].connections.push(photoId1);
                         updateConnections(t, photoId2, db.projects[i].photos[j].connections).then(v => {
                            addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
                         }).catch(e => {
                            db.projects[i].photos[j].connections.pop();
-                           $(photoId1).checked = false;
                            alert(`${e} Aguarde 1 minuto e tente novamente.`);
                         });
                      }
