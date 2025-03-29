@@ -287,7 +287,7 @@ function addConnection(photoId1, photoId2){
                            alert('Conexão criada com sucesso.');
                         }).catch(e => {
                            db.projects[i].photos[j].connections.pop();
-                           $(photoId2).checked = false;
+                           $(photoId1).checked = false;
                            alert(`${e} Aguarde 1 minuto e tente novamente.`);
                         });
                      }
