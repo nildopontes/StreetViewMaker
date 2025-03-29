@@ -25,15 +25,17 @@ function checkboxClick(id, idConnection){
    $(id).checked ? addConnection(id, idConnection) : removeConnection(id, idConnection);
 }
 function getCoordinates(photoId){
+   let coordinates;
    db.projects.map(p => {
       if(p.name == project){
          p.photos.map(i => {
             if(i.photoId == photoId){
-               return i.connections;
+               coordinates = i.latLng;
             }
          });
       }
    });
+   return coordinates;
 }
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
