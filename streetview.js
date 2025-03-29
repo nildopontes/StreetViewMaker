@@ -213,7 +213,7 @@ Calcula a distância em metros entre duas coordenadas
 function haversineDistance([lat1, lon1], [lat2, lon2]){
    let toRadian = angle => (Math.PI / 180) * angle;
    let distance = (a, b) => (Math.PI / 180) * (a - b);
-   let RADIUS_OF_EARTH_IN_KM = 6371;
+   let RADIUS_OF_EARTH = 6378100;
    let dLat = distance(lat2, lat1);
    let dLon = distance(lon2, lon1);
    lat1 = toRadian(lat1);
@@ -221,5 +221,5 @@ function haversineDistance([lat1, lon1], [lat2, lon2]){
    // Haversine Formula
    let a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
    let c = 2 * Math.asin(Math.sqrt(a));
-   return RADIUS_OF_EARTH_IN_KM * c;
+   return RADIUS_OF_EARTH * c;
 }

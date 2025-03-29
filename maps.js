@@ -24,6 +24,17 @@ function hideMenu(){
 function checkboxClick(id, idConnection){
    $(id).checked ? addConnection(id, idConnection) : removeConnection(id, idConnection);
 }
+function getCoordinates(photoId){
+   db.projects.map(p => {
+      if(p.name == project){
+         p.photos.map(i => {
+            if(i.photoId == photoId){
+               return i.connections;
+            }
+         });
+      }
+   });
+}
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
@@ -43,8 +54,8 @@ function addMarker(lat, lng, id, name){
          db.projects.map((x, i) => {
             if(db.projects[i].name == project){
                let items = '';
-               db.projects[i].photos.map(p => { // Exibit apenas as fotos com até 10 metros de distância
-                  if(p.photoId != t.target.data) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
+               db.projects[i].photos.map(p => {
+                  if(p.photoId != t.target.data && haversineDistance(getCoordinates(p.photoId), getCoordinates(t.target.data)) < 11) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
                });
                $('submenu').innerHTML = items;
             }
