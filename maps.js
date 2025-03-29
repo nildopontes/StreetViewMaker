@@ -43,7 +43,7 @@ function addMarker(lat, lng, id, name){
          db.projects.map((x, i) => {
             if(db.projects[i].name == project){
                let items = '';
-               db.projects[i].photos.map(p => {
+               db.projects[i].photos.map(p => { // Exibit apenas as fotos com até 10 metros de distância
                   if(p.photoId != t.target.data) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
                });
                $('submenu').innerHTML = items;
@@ -51,7 +51,7 @@ function addMarker(lat, lng, id, name){
          });
          let states = ['block',,,,'block','none'];
          $('submenu').style.display = states[$('submenu').style.display.length];
-         $('submenu').style.left = t.clientX + 104 + 'px';
+         $('submenu').style.left = t.clientX + 124 + 'px';
          $('submenu').style.top = t.clientY + 50 + 'px';
       };
       $('mask').style.display = 'block';
