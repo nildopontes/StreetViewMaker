@@ -286,6 +286,7 @@ function addConnection(photoId1, photoId2){
                            addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
                         }).catch(e => {
                            db.projects[i].photos[j].connections.pop();
+                           $(photoId2).checked = false;
                            alert(`${e} Aguarde 1 minuto e tente novamente.`);
                         });
                      }
@@ -297,6 +298,7 @@ function addConnection(photoId1, photoId2){
                            addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
                         }).catch(e => {
                            db.projects[i].photos[j].connections.pop();
+                           $(photoId1).checked = false;
                            alert(`${e} Aguarde 1 minuto e tente novamente.`);
                         });
                      }
