@@ -143,6 +143,10 @@ function submit(){
                   updateFile(t, JSON.stringify(db), db.idOnDrive);
                   hideForm();
                   hideLoading();
+               }).catch(e => {
+                  alert(`${e} Provavelmente sua imagem não é compatível com o Street View devido à falta de algum metadado obrigatório.`);
+                  hideForm();
+                  hideLoading();
                });
             });
          });
@@ -165,7 +169,7 @@ function addPhoto(idPhoto, lat, lng, photoName){
          alert('Foto adicionada com sucesso.');
       }
    });
-   if(found == 0) alert('Erro. O projeto não existe.');
+   if(found == 0) alert('O projeto não existe.');
 }
 function listProjects(){
    let projects = '';

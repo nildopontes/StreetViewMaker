@@ -5,8 +5,13 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="style.css">
       <link rel="icon" href="favicon.png" type="image/png">
+      <script>
+         if(sessionStorage.getItem('secureToken') !== null && parseInt(Date.now()/1000, 10) < parseInt(sessionStorage.getItem('expireToken'), 10)){
+            window.location.href = 'projects.html';
+         }
+      </script>
       <script src="auth.js"></script>
-      <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script> <!-- Verificar se o user já está logado e redirecionar para a página projects.html -->
+      <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <title>Street View Publish Client - Enviar fotos 360° para o Google Maps</title>
       <style>
          a:link,a:visited{

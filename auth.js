@@ -26,6 +26,8 @@ function initClient(){
 Revoga o token de acesso OAuth atual
 */
 function revokeToken(){
+   sessionStorage.removeItem('secureToken');
+   sessionStorage.removeItem('expireToken');
    google.accounts.oauth2.revoke(access_token, () => console.log('access token revoked'));
 }
 function alertRedir(){

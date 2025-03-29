@@ -85,7 +85,7 @@ function sendMetadata(token, uploadUrl, latitude, longitude){
                log(`f:sendMetadata()`, `status:${xhr.status}`, `response:${xhr.response}`);
                resolve(xhr.response);
             }else{
-               reject(`Error: status code ${xhr.status}.`);
+               reject(`Erro: status code ${xhr.status}.`);
             }
          }
       }
@@ -207,30 +207,19 @@ function listPhotos(token, pageToken = ''){ // Testar essa função
       xhr.send();
    });
 }
-
+/*
+Calcula a distância em metros entre duas coordenadas
+*/
 function haversineDistance([lat1, lon1], [lat2, lon2]){
-   const toRadian = angle => (Math.PI / 180) * angle;
-   const distance = (a, b) => (Math.PI / 180) * (a - b);
-   const RADIUS_OF_EARTH_IN_KM = 6371;
-   const dLat = distance(lat2, lat1);
-   const dLon = distance(lon2, lon1);
-
+   let toRadian = angle => (Math.PI / 180) * angle;
+   let distance = (a, b) => (Math.PI / 180) * (a - b);
+   let RADIUS_OF_EARTH_IN_KM = 6371;
+   let dLat = distance(lat2, lat1);
+   let dLon = distance(lon2, lon1);
    lat1 = toRadian(lat1);
    lat2 = toRadian(lat2);
-
    // Haversine Formula
-   const a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
-   const c = 2 * Math.asin(Math.sqrt(a));
-   let finalDistance = RADIUS_OF_EARTH_IN_KM * c;
-   return finalDistance;
-}
-
-function sendPhotosphere(){
-   getToken().then(t => {
-      getUploadURL(t).then(uploadUrl => {
-         sendImageData(t, 'photo', uploadUrl).then(() => {
-            sendMetadata(t, uploadUrl, document.getElementById('latitude').value, document.getElementById('longitude').value);
-         });
-      });
-   }).catch(() => alertRedir());
+   let a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+   let c = 2 * Math.asin(Math.sqrt(a));
+   return RADIUS_OF_EARTH_IN_KM * c;
 }
