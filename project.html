@@ -29,17 +29,17 @@
                   db = r;
                   let params = new URLSearchParams(window.location.search);
                   project = decodeURIComponent(params.get('p'));
-                  let i;
-                  if((i = db.projects.findIndex(p => p.name == project)) > -1){
+                  let pj;
+                  if((pj = db.projects.find(p => p.name == project)) !== 'undefined'){
                      document.getElementById('projectName').innerText = project;
-                     db.projects[i].photos.map(f => {
+                     pj.photos.map(f => {
                         addMarker(...f.latLng, f.photoId, f.name);
                         f.connections.map(v => {
                            addLine(...f.latLng, f.photoId, v);
                         });
                      });
-                     map.setZoom(p.zoom);
-                     map.setCenter(p.center);
+                     map.setZoom(pj.zoom);
+                     map.setCenter(pj.center);
                   }
                });
             }).catch(() => alertRedir());
