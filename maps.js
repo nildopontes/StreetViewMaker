@@ -25,17 +25,7 @@ function checkboxClick(id, idConnection){
    $(id).checked ? addConnection(id, idConnection) : removeConnection(id, idConnection);
 }
 function getCoordinates(photoId){
-   let coordinates;
-   db.projects.map(p => {
-      if(p.name == project){
-         p.photos.map(i => {
-            if(i.photoId == photoId){
-               coordinates = i.latLng;
-            }
-         });
-      }
-   });
-   return coordinates;
+   return db.projects.find(p => p.name == project).photos.find(p => p.photoId = photoId).latLng;
 }
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
@@ -53,15 +43,11 @@ function addMarker(lat, lng, id, name){
          hideMenu();
       };
       $('photoConnections').onclick = () => {
-         db.projects.map((x, i) => {
-            if(db.projects[i].name == project){
-               let items = '';
-               db.projects[i].photos.map(p => {
-                  if(p.photoId != t.target.data && haversineDistance(getCoordinates(p.photoId), getCoordinates(t.target.data)) < 11) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
-               });
-               $('submenu').innerHTML = items;
-            }
+         let items = '';
+         db.projects.find(p => p.name == project).photos.map(p => {
+            if(p.photoId != t.target.data && haversineDistance(getCoordinates(p.photoId), getCoordinates(t.target.data)) < 10) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
          });
+         $('submenu').innerHTML = items;
          let states = ['block',,,,'block','none'];
          $('submenu').style.display = states[$('submenu').style.display.length];
          $('submenu').style.left = t.clientX + 124 + 'px';
@@ -76,19 +62,17 @@ function addMarker(lat, lng, id, name){
    marker.setMap(map);
 }
 function removeMarker(data){
-   markers.map((x, i) => {
-      if(markers[i].data == data){
-         markers[i].map = null;
-         markers.splice(i, 1);
-      }
-   });
+   let i;
+   if((i = markers.findIndex(m => m.data == data)) > -1){
+      markers[i].map = null;
+      markers.splice(i, 1);
+   }
 }
 function renameMarker(data, newName){
-   markers.map((x, i) => {
-      if(markers[i].data == data){
-         markers[i].title = newName;
-      }
-   });
+   let i;
+   if((i = markers.findIndex(m => m.data == data)) > -1){
+      markers[i].title = newName;
+   }
 }
 function addLine(lat, lng, id1, id2){
    let found = false;
@@ -117,13 +101,11 @@ function addLine(lat, lng, id1, id2){
    line.setMap(map);
 }
 function removeLine(id1, id2){
-   lines.map((x, i) => {
-      let ids = JSON.parse(lines[i].data).ids;
-      if(ids.includes(id1) && ids.includes(id2)){
-         lines[i].setMap(null);
-         lines.splice(i, 1);
-      }
-   });
+   let i;
+   if((i = lines.findIndex(l => (l.data.search(new RegExp(id1)) > -1) && (l.data.search(new RegExp(id2)) > -1))) > -1){
+      lines[i].setMap(null);
+      lines.splice(i, 1);
+   }
 }
 function showLoading(){
    $('loading').style.display = 'block';
@@ -167,22 +149,19 @@ function submit(){
    }
 }
 function addPhoto(idPhoto, lat, lng, photoName){
-   let found = 0;
-   db.projects.map((x, i) => {
-      if(db.projects[i].name == project){
-         db.projects[i].photos.push({
-            "photoId": idPhoto,
-            "name": photoName,
-            "latLng": [lat, lng],
-            "connections": []
-         });
-         addMarker(lat, lng, idPhoto, photoName);
-         found ++;
-         getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
-         alert('Foto adicionada com sucesso.');
-      }
-   });
-   if(found == 0) alert('O projeto não existe.');
+   let photo = {
+      "photoId": idPhoto,
+      "name": photoName,
+      "latLng": [lat, lng],
+      "connections": []
+   };
+   let i;
+   if((i = db.projects.findIndex(p => p.name == project)) > -1){
+      db.projects[i].photos.push(photo);
+      addMarker(lat, lng, idPhoto, photoName);
+      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
+      alert('Foto adicionada com sucesso.');
+   }else alert('O projeto não existe.');
 }
 function listProjects(){
    let projects = '';
@@ -325,10 +304,6 @@ function addConnection(photoId1, photoId2){
    }
 }
 function removeConnection(photoId1, photoId2){
-   if(photoId1 == photoId2){
-      alert('São necessário 2 IDs diferentes.');
-      return;
-   }
    let found = 0;
    db.projects.map((x, i) => {
       if(db.projects[i].name == project){
@@ -374,20 +349,19 @@ function removeConnection(photoId1, photoId2){
    }
 }
 function removeProject(name){
-   db.projects.map((x, i) => {
-      if(db.projects[i].name == name){
-         if(db.projects[i].photos.length > 0){
-            alert('Não é permitido apagar projetos que possuem fotos. Remova todas as fotos antes.');
-         }else{
-            if(window.confirm('Você tem certeza que quer deletar o projeto?')){
-               db.projects.splice(i, 1);
-               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
-               listProjects();
-               alert('Projeto apagado com sucesso');
-            }
+   let i;
+   if((i = db.projects.findIndex(p => p.name == project)) > -1){
+      if(db.projects[i].photos.length > 0){
+         alert('Não é permitido apagar projetos que possuem fotos. Remova todas as fotos antes.');
+      }else{
+         if(window.confirm('Você tem certeza que quer deletar o projeto?')){
+            db.projects.splice(i, 1);
+            getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
+            listProjects();
+            alert('Projeto apagado com sucesso');
          }
       }
-   });
+   }
 }
 function renameProject(currentName){
    let newName = prompt('Escolha um nome para o projeto.');
@@ -397,14 +371,9 @@ function renameProject(currentName){
       alert('O nome precisa ter pelo menos 1 caractere.');
       return;
    }
-   let found = 0;
-   db.projects.map((x, i) => {
-      if(db.projects[i].name == currentName){
-         db.projects[i].name = newName;
-         found++;
-      }
-   });
-   if(found > 0){
+   let i;
+   if((i = db.projects.findIndex(p => p.name == currentName)) > -1){
+      db.projects[i].name = newName;
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
       listProjects();
       alert('Projeto renomeado com sucesso.');
