@@ -37,7 +37,7 @@ function checkboxClick(id, idConnection){
    $(id).checked ? addConnection(id, idConnection) : removeConnection(id, idConnection);
 }
 function getCoordinates(photoId){
-   return db.projects.find(p => p.name == project).photos.find(p => p.photoId = photoId).latLng;
+   return db.projects.find(p => p.name == project).photos.find(p => p.photoId == photoId).latLng;
 }
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({
@@ -54,28 +54,10 @@ function addMarker(lat, lng, id, name){
          renamePhoto(t.target.data);
          hideMenu();
       };
-      
-     
-     /*$('photoConnections').onclick = () => {
-         db.projects.map((x, i) => {
-            if(db.projects[i].name == project){
-               let items = '';
-               db.projects[i].photos.map(p => {
-                  if(p.photoId != t.target.data) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
-               });
-               $('submenu').innerHTML = items;
-            }
-         });
-         let states = ['block',,,,'block','none'];
-         $('submenu').style.display = states[$('submenu').style.display.length];
-         $('submenu').style.left = t.clientX + 104 + 'px';
-         $('submenu').style.top = t.clientY + 50 + 'px';
-      };*/
-      
       $('photoConnections').onclick = () => {
          let items = '';
          getProject(project).photos.map(p => {
-            if(p.photoId != t.target.data/* && haversineDistance(getCoordinates(p.photoId), getCoordinates(t.target.data)) < 10*/) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
+            if(p.photoId != t.target.data && haversineDistance(getCoordinates(p.photoId), getCoordinates(t.target.data)) < 10) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
          });
          $('submenu').innerHTML = items;
          let states = ['block',,,,'block','none'];
@@ -83,8 +65,6 @@ function addMarker(lat, lng, id, name){
          $('submenu').style.left = t.clientX + 124 + 'px';
          $('submenu').style.top = t.clientY + 50 + 'px';
       };
-      
-      
       $('mask').style.display = 'block';
       $('menu').style.left = t.clientX + 'px';
       $('menu').style.top = t.clientY + 'px';
