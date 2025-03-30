@@ -29,8 +29,8 @@
                   db = r;
                   let params = new URLSearchParams(window.location.search);
                   project = decodeURIComponent(params.get('p'));
-                  let pj;
-                  if((pj = db.projects.find(p => p.name == project)) !== 'undefined'){
+                  let pj = getProject(project);
+                  if(pj !== 'undefined'){
                      document.getElementById('projectName').innerText = project;
                      pj.photos.map(f => {
                         addMarker(...f.latLng, f.photoId, f.name);
