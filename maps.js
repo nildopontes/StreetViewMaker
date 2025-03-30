@@ -163,9 +163,9 @@ function addPhoto(idPhoto, lat, lng, photoName){
       "latLng": [lat, lng],
       "connections": []
    };
-   let i = projectIndex(project);
-   if(i => 0){
-      db.projects[i].photos.push(photo);
+   let pj = getProject(project);
+   if(typeof pj !== 'undefined'){
+      pj.photos.push(photo);
       addMarker(lat, lng, idPhoto, photoName);
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
       alert('Foto adicionada com sucesso.');
@@ -187,9 +187,7 @@ function addProject(){
       return;
    }
    let i = projectIndex(name);
-   if(i >= 0){
-      alert('Este projeto já existe.');
-   }else{
+   if(i == -1){
       db.projects.push({
          "name": name,
          "photos": [],
@@ -202,35 +200,29 @@ function addProject(){
       getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
       listProjects();
       alert('Projeto criado com sucesso.');
-   }
+   }else alert('Este projeto já existe.');
 }
 function removePhoto(photoId){
    if(!confirm('Tem certeza que deseja apagar essa foto?')) return;
-   let found = 0;
-   db.projects.map((x, i) => {
-      if(db.projects[i].name == project){
-         db.projects[i].photos.map((y, j) => {
-            if(db.projects[i].photos[j].photoId == photoId){
-               found++;
-               if(db.projects[i].photos[j].connections.length > 0){
-                  alert('Desfaça as conexões antes de remover esta foto.');
-                  return;
-               }
-               getToken().then(t => {
-                  deletePhoto(t, photoId).then(r => {
-                     if(r === true){
-                        db.projects[i].photos.splice(j, 1);
-                        updateFile(t, JSON.stringify(db), db.idOnDrive);
-                        removeMarker(photoId);
-                        alert('Foto removida com sucesso.');
-                     }
-                  }).catch(e => alert(`A foto foi encontrada mas ocorreu um erro ao tentar apagar. ${e}`));
-               }).catch(() => alertRedir());
-            }
-         });
+   let i = projectIndex(project);
+   let photo = getPhoto(i, photoId); 
+   
+   if(typeof photo !== 'undefined'){
+      if(photo.connections.length > 0){
+         alert('Desfaça as conexões antes de remover esta foto.');
+         return;
       }
-   });
-   if(found == 0) alert('A foto não foi encontrada. Verifique se o ID da foto e nome do projeto estão corretos.');
+      getToken().then(t => {
+         deletePhoto(t, photoId).then(r => {
+            if(r === true){
+               db.projects[i].photos.splice(photoIndex(i, photoId), 1);
+               updateFile(t, JSON.stringify(db), db.idOnDrive);
+               removeMarker(photoId);
+               alert('Foto removida com sucesso.');
+            }
+         }).catch(e => alert(`A foto foi encontrada mas ocorreu um erro ao tentar apagar. ${e}`));
+      }).catch(() => alertRedir());
+   }else alert('A foto não foi encontrada. Verifique se o ID da foto e nome do projeto estão corretos.');
 }
 function renamePhoto(photoId){
    let newName = prompt('Escolha um nome para a foto.');
@@ -241,112 +233,64 @@ function renamePhoto(photoId){
       return;
    }
    let i = projectIndex(project);
-   if(i >= 0){
-      let j = photoIndex(i, photoId);
-      if(j >= 0){
-         db.projects[i].photos[j].name = newName;
-         renameMarker(photoId, newName);
-         getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
-         alert('Foto renomeada com sucesso.');
-      }
+   let photo = getPhoto(i, photoId);
+   if(typeof photo !== 'undefined'){
+      photo.name = newName;
+      renameMarker(photoId, newName);
+      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
+      alert('Foto renomeada com sucesso.');
    }else alert('Verifique se o ID da foto e nome do projeto estão corretos.');
 }
 function addConnection(photoId1, photoId2){
-   if(photoId1 == photoId2){
-      alert('É necessário 2 IDs de fotos.');
-      return;
-   }
-   let found = 0;
-   db.projects.map((x, i) => {
-      if(db.projects[i].name == project){
-         db.projects[i].photos.map((y, j) => {
-            if(db.projects[i].photos[j].photoId == photoId1 || db.projects[i].photos[j].photoId == photoId2){
-               found++;
-            }
-         });
-      }
-   });
-   if(found == 2){
-      db.projects.map((x, i) => {
-         if(db.projects[i].name == project){
-            db.projects[i].photos.map((y, j) => {
-               getToken().then(t => {
-                  if(db.projects[i].photos[j].photoId == photoId1){
-                     if(db.projects[i].photos[j].connections.indexOf(photoId2) == -1){
-                        db.projects[i].photos[j].connections.push(photoId2);
-                        updateConnections(t, photoId1, db.projects[i].photos[j].connections).then(v => {
-                           addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
-                           alert('Conexão criada com sucesso.');
-                        }).catch(e => {
-                           db.projects[i].photos[j].connections.pop();
-                           $(photoId1).checked = false;
-                           alert(`${e} Aguarde 1 minuto e tente novamente.`);
-                        });
-                     }
-                  }
-                  if(db.projects[i].photos[j].photoId == photoId2){
-                     if(db.projects[i].photos[j].connections.indexOf(photoId1) == -1){
-                        db.projects[i].photos[j].connections.push(photoId1);
-                        updateConnections(t, photoId2, db.projects[i].photos[j].connections).then(v => {
-                           addLine(...db.projects[i].photos[j].latLng, photoId1, photoId2);
-                           getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
-                        }).catch(e => {
-                           db.projects[i].photos[j].connections.pop();
-                        });
-                     }
-                  }
-               }).catch(() => alertRedir());
+   let i = projectIndex(project);
+   let photo1 = getPhoto(i, photoId1); 
+   let photo2 = getPhoto(i, photoId2);
+   if(typeof photo1 !== 'undefined' && typeof photo2 !== 'undefined'){
+      getToken().then(t => {
+         if(photo1.connections.indexOf(photoId2) == -1){
+            photo1.connections.push(photoId2);
+            updateConnections(t, photoId1, photo1.connections).then(v => {
+               addLine(...photo1.latLng, photoId1, photoId2);
+               alert('Conexão criada com sucesso.');
+            }).catch(e => {
+               photo1.connections.pop();
+               $(photoId1).checked = false;
+               alert(`${e} Aguarde 1 minuto e tente novamente.`);
             });
          }
-      });
-   }else{
-      alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
-   }
+         if(photo2.connections.indexOf(photoId1) == -1){
+            photo2.connections.push(photoId1);
+            updateConnections(t, photoId2, photo2.connections).then(v => {
+               addLine(...photo2.latLng, photoId1, photoId2);
+               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
+            }).catch(e => {
+               photo2.connections.pop();
+            });
+         }
+      }).catch(() => alertRedir());
+   }else alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
 }
 function removeConnection(photoId1, photoId2){
-   let found = 0;
-   db.projects.map((x, i) => {
-      if(db.projects[i].name == project){
-         db.projects[i].photos.map((y, j) => {
-            if(db.projects[i].photos[j].photoId == photoId1 || db.projects[i].photos[j].photoId == photoId2){
-               found++;
-            }
-         });
-      }
-   });
-   if(found == 2){
-      db.projects.map((x, i) => {
-         if(db.projects[i].name == project){
-            db.projects[i].photos.map((y, j) => {
-               if(db.projects[i].photos[j].photoId == photoId1){
-                  found = db.projects[i].photos[j].connections.indexOf(photoId2);
-                  if(found != -1){
-                     db.projects[i].photos[j].connections.splice(found, 1);
-                     getToken().then(t => {
-                        updateConnections(t, photoId1, db.projects[i].photos[j].connections).then(r => {
-                           alert('Conaxão removida com sucesso.');
-                        }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
-                     }).catch(() => alertRedir());
-                  }
-               }
-               if(db.projects[i].photos[j].photoId == photoId2){
-                  found = db.projects[i].photos[j].connections.indexOf(photoId1);
-                  if(found != -1){
-                     db.projects[i].photos[j].connections.splice(found, 1);
-                     getToken().then(t => {
-                        updateConnections(t, photoId2, db.projects[i].photos[j].connections).then(r => {
-                           getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
-                        }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
-                     }).catch(() => alertRedir());
-                  }
-               }
-            });
-            removeLine(photoId1, photoId2);
+   let i = projectIndex(project);
+   let photo1 = getPhoto(i, photoId1); 
+   let photo2 = getPhoto(i, photoId2);
+   if(typeof photo1 !== 'undefined' && typeof photo2 !== 'undefined'){
+      getToken().then(t => {
+         if(photo1.connections.indexOf(photoId2) >= 0){
+            photo1.connections.splice(found, 1);
+            updateConnections(t, photoId1, photo1.connections).then(r => {
+               alert('Conaxão removida com sucesso.');
+            }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
          }
-      });
-   }else{
-      alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
-   }
+         if(photo2.connections.indexOf(photoId1) >= 0){
+            photo2.connections.splice(found, 1);
+            updateConnections(t, photoId2, photo2.connections).then(r => {
+               getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
+            }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
+         }
+      }).catch(() => alertRedir());
+      removeLine(photoId1, photoId2);
+   }else alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
 }
 function removeProject(name){
    let i = projectIndex(name);

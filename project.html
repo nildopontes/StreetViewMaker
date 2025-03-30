@@ -30,7 +30,7 @@
                   let params = new URLSearchParams(window.location.search);
                   project = decodeURIComponent(params.get('p'));
                   let pj = getProject(project);
-                  if(pj !== 'undefined'){
+                  if(typeof pj !== 'undefined'){
                      document.getElementById('projectName').innerText = project;
                      pj.photos.map(f => {
                         addMarker(...f.latLng, f.photoId, f.name);
