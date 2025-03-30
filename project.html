@@ -15,12 +15,11 @@
          var project;
          document.addEventListener('visibilitychange', () => { // acionar esta ação também quando o usuário tentar sair da página
             if(document.visibilityState === 'hidden'){
-               db.projects.map((x, i) => {
-                  if(db.projects[i].name == project){
-                     db.projects[i].center = map.getCenter().toJSON();
-                     db.projects[i].zoom = map.getZoom();
-                  }
-               });
+               let i;
+               if((i = db.projects.findIndex(p => p.name == project)) > -1){
+                  db.projects[i].center = map.getCenter().toJSON();
+                  db.projects[i].zoom = map.getZoom();
+               }
                getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
             };
          });
@@ -30,19 +29,18 @@
                   db = r;
                   let params = new URLSearchParams(window.location.search);
                   project = decodeURIComponent(params.get('p'));
-                  db.projects.map(p => {
-                     if(p.name == project){
-                        document.getElementById('projectName').innerText = p.name;
-                        p.photos.map(f => {
-                           addMarker(...f.latLng, f.photoId, f.name);
-                           f.connections.map(v => {
-                              addLine(...f.latLng, f.photoId, v);
-                           });
+                  let i;
+                  if((i = db.projects.findIndex(p => p.name == project)) > -1){
+                     document.getElementById('projectName').innerText = project;
+                     db.projects[i].photos.map(f => {
+                        addMarker(...f.latLng, f.photoId, f.name);
+                        f.connections.map(v => {
+                           addLine(...f.latLng, f.photoId, v);
                         });
-                        map.setZoom(p.zoom);
-                        map.setCenter(p.center);
-                     };
-                  });
+                     });
+                     map.setZoom(p.zoom);
+                     map.setCenter(p.center);
+                  }
                });
             }).catch(() => alertRedir());
          });
