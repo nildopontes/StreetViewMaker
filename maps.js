@@ -20,14 +20,14 @@ function $(id){
 function projectIndex(name){
    return db.projects.findIndex(p => p.name == name);
 }
-function photoIndex(pjctIndex, photoId){
-   return db.projects[pjctIndex].photos.findIndex(p => p.photoId == photoId);
+function photoIndex(photoId){
+   return project.photos.findIndex(p => p.photoId == photoId);
 }
 function getProject(name){
    return db.projects.find(p => p.name == name);
 }
-function getPhoto(pjctIndex, photoId){
-   return db.projects[pjctIndex].photos.find(p => p.photoId == photoId);
+function getPhoto(photoId){
+   return project.photos.find(p => p.photoId == photoId);
 }
 function hideMenu(){
    $('mask').style.display = 'none';
@@ -40,7 +40,7 @@ function getCoordinates(photoId){
    return db.projects.find(p => p.name == project).photos.find(p => p.photoId == photoId).latLng;
 }
 function addMarker(lat, lng, id, name){
-   let marker = new google.maps.marker.AdvancedMarkerElement({
+   let marker = new google.maps.marker.AdvancedMarkerElement({ // Adicionar a vizualização da miniatura da foto ao clicar no marker
       position: { lat: lat, lng: lng },
       title: name
    });
@@ -56,7 +56,7 @@ function addMarker(lat, lng, id, name){
       };
       $('photoConnections').onclick = () => {
          let items = '';
-         getProject(project).photos.map(p => {
+         project.photos.map(p => {
             if(p.photoId != t.target.data && haversineDistance(getCoordinates(p.photoId), getCoordinates(t.target.data)) < 10) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
          });
          $('submenu').innerHTML = items;
@@ -163,13 +163,11 @@ function addPhoto(idPhoto, lat, lng, photoName){
       "latLng": [lat, lng],
       "connections": []
    };
-   let pj = getProject(project);
-   if(typeof pj !== 'undefined'){
-      pj.photos.push(photo);
-      addMarker(lat, lng, idPhoto, photoName);
-      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
+   project.photos.push(photo);
+   addMarker(lat, lng, idPhoto, photoName);
+   getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive).then(r => {
       alert('Foto adicionada com sucesso.');
-   }else alert('O projeto não existe.');
+   })).catch(() => alertRedir());
 }
 function listProjects(){
    let projects = '';
@@ -204,9 +202,7 @@ function addProject(){
 }
 function removePhoto(photoId){
    if(!confirm('Tem certeza que deseja apagar essa foto?')) return;
-   let i = projectIndex(project);
    let photo = getPhoto(i, photoId); 
-   
    if(typeof photo !== 'undefined'){
       if(photo.connections.length > 0){
          alert('Desfaça as conexões antes de remover esta foto.');
@@ -215,7 +211,7 @@ function removePhoto(photoId){
       getToken().then(t => {
          deletePhoto(t, photoId).then(r => {
             if(r === true){
-               db.projects[i].photos.splice(photoIndex(i, photoId), 1);
+               project.photos.splice(photoIndex(photoId), 1);
                updateFile(t, JSON.stringify(db), db.idOnDrive);
                removeMarker(photoId);
                alert('Foto removida com sucesso.');
@@ -232,8 +228,7 @@ function renamePhoto(photoId){
       alert('O nome precisa ter pelo menos 1 caractere.');
       return;
    }
-   let i = projectIndex(project);
-   let photo = getPhoto(i, photoId);
+   let photo = getPhoto(photoId);
    if(typeof photo !== 'undefined'){
       photo.name = newName;
       renameMarker(photoId, newName);
@@ -242,9 +237,8 @@ function renamePhoto(photoId){
    }else alert('Verifique se o ID da foto e nome do projeto estão corretos.');
 }
 function addConnection(photoId1, photoId2){
-   let i = projectIndex(project);
-   let photo1 = getPhoto(i, photoId1); 
-   let photo2 = getPhoto(i, photoId2);
+   let photo1 = getPhoto(photoId1); 
+   let photo2 = getPhoto(photoId2);
    if(typeof photo1 !== 'undefined' && typeof photo2 !== 'undefined'){
       getToken().then(t => {
          if(photo1.connections.indexOf(photoId2) == -1){
@@ -271,9 +265,8 @@ function addConnection(photoId1, photoId2){
    }else alert('Algo não foi encontrado. Verifique se as informações estão corretas.');
 }
 function removeConnection(photoId1, photoId2){
-   let i = projectIndex(project);
-   let photo1 = getPhoto(i, photoId1); 
-   let photo2 = getPhoto(i, photoId2);
+   let photo1 = getPhoto(photoId1); 
+   let photo2 = getPhoto(photoId2);
    if(typeof photo1 !== 'undefined' && typeof photo2 !== 'undefined'){
       getToken().then(t => {
          if(photo1.connections.indexOf(photoId2) >= 0){

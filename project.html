@@ -15,31 +15,28 @@
          var project;
          document.addEventListener('visibilitychange', () => { // acionar esta ação também quando o usuário tentar sair da página
             if(document.visibilityState === 'hidden'){
-               let i;
-               if((i = db.projects.findIndex(p => p.name == project)) > -1){
-                  db.projects[i].center = map.getCenter().toJSON();
-                  db.projects[i].zoom = map.getZoom();
-               }
+               project.center = map.getCenter().toJSON();
+               project.zoom = map.getZoom();
                getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
-            };
+            }
          });
          window.addEventListener('load', () => {
             getToken().then(t => {
                discoverDatabaseID(t).then(r => {
                   db = r;
                   let params = new URLSearchParams(window.location.search);
-                  project = decodeURIComponent(params.get('p'));
-                  let pj = getProject(project);
-                  if(typeof pj !== 'undefined'){
-                     document.getElementById('projectName').innerText = project;
-                     pj.photos.map(f => {
+                  let p = decodeURIComponent(params.get('p'));
+                  let project = getProject(p);
+                  if(typeof project !== 'undefined'){
+                     $('projectName').innerText = project.name;
+                     project.photos.map(f => {
                         addMarker(...f.latLng, f.photoId, f.name);
                         f.connections.map(v => {
                            addLine(...f.latLng, f.photoId, v);
                         });
                      });
-                     map.setZoom(pj.zoom);
-                     map.setCenter(pj.center);
+                     map.setZoom(project.zoom);
+                     map.setCenter(project.center);
                   }
                });
             }).catch(() => alertRedir());
