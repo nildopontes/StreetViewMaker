@@ -37,7 +37,7 @@ function checkboxClick(id, idConnection){
    $(id).checked ? addConnection(id, idConnection) : removeConnection(id, idConnection);
 }
 function getCoordinates(photoId){
-   return db.projects.find(p => p.name == project).photos.find(p => p.photoId == photoId).latLng;
+   return project.photos.find(p => p.photoId == photoId).latLng;
 }
 function addMarker(lat, lng, id, name){
    let marker = new google.maps.marker.AdvancedMarkerElement({ // Adicionar a vizualização da miniatura da foto ao clicar no marker
