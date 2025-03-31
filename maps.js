@@ -202,7 +202,7 @@ function addProject(){
 }
 function removePhoto(photoId){
    if(!confirm('Tem certeza que deseja apagar essa foto?')) return;
-   let photo = getPhoto(i, photoId); 
+   let photo = getPhoto(photoId); 
    if(typeof photo !== 'undefined'){
       if(photo.connections.length > 0){
          alert('Desfaça as conexões antes de remover esta foto.');
@@ -232,8 +232,9 @@ function renamePhoto(photoId){
    if(typeof photo !== 'undefined'){
       photo.name = newName;
       renameMarker(photoId, newName);
-      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
-      alert('Foto renomeada com sucesso.');
+      getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive).then(r => {
+         alert('Foto renomeada com sucesso.');
+      })).catch(() => alertRedir());
    }else alert('Verifique se o ID da foto e nome do projeto estão corretos.');
 }
 function addConnection(photoId1, photoId2){
@@ -272,7 +273,7 @@ function removeConnection(photoId1, photoId2){
          if(photo1.connections.indexOf(photoId2) >= 0){
             photo1.connections.splice(found, 1);
             updateConnections(t, photoId1, photo1.connections).then(r => {
-               alert('Conaxão removida com sucesso.');
+               alert('Conexão removida com sucesso.');
             }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
          }
          if(photo2.connections.indexOf(photoId1) >= 0){
