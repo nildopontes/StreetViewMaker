@@ -31,7 +31,7 @@ function revokeToken(){
    google.accounts.oauth2.revoke(access_token, () => console.log('access token revoked'));
 }
 function alertRedir(){
-   if(sessionStorage.getItem('secureToken') !== null && parseInt(Date.now()/1000, 10) < parseInt(sessionStorage.getItem('expireToken'), 10)) return;
+   if(sessionStorage.getItem('secureToken') !== null && parseInt(Date.now()/1000, 10) < parseInt(sessionStorage.getItem('expireToken'), 10)) return; //Temporário
    alert('Sessão expirada.');
    window.location.href = 'index.html';
 }

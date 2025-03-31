@@ -270,13 +270,14 @@ function removeConnection(photoId1, photoId2){
    let photo2 = getPhoto(photoId2);
    if(typeof photo1 !== 'undefined' && typeof photo2 !== 'undefined'){
       getToken().then(t => {
-         if(photo1.connections.indexOf(photoId2) >= 0){
+         let found;
+         if((found = photo1.connections.indexOf(photoId2)) >= 0){
             photo1.connections.splice(found, 1);
             updateConnections(t, photoId1, photo1.connections).then(r => {
                alert('Conexão removida com sucesso.');
             }).catch(e => alert(`Ocorreu um erro ao atualizar as conexões. ${e}`));
          }
-         if(photo2.connections.indexOf(photoId1) >= 0){
+         if((found = photo2.connections.indexOf(photoId1)) >= 0){
             photo2.connections.splice(found, 1);
             updateConnections(t, photoId2, photo2.connections).then(r => {
                getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
