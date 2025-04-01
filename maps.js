@@ -40,11 +40,14 @@ function getCoordinates(photoId){
    return project.photos.find(p => p.photoId == photoId).latLng;
 }
 function addMarker(lat, lng, id, name){
-   let marker = new google.maps.marker.AdvancedMarkerElement({ // Adicionar a vizualização da miniatura da foto ao clicar no marker
+   let marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat: lat, lng: lng },
       title: name
    });
    marker.data = id;
+   marker.addEventListener('click', e => { // Adicionar a vizualização da miniatura da foto ao clicar no marker
+      
+   });
    marker.addEventListener('contextmenu', t => {
       $('photoTrash').onclick = () => {
          removePhoto(t.target.data);
@@ -161,6 +164,8 @@ function addPhoto(idPhoto, lat, lng, photoName){
       "photoId": idPhoto,
       "name": photoName,
       "latLng": [lat, lng],
+      "thumbnail": "";
+      "download": "";
       "connections": []
    };
    project.photos.push(photo);

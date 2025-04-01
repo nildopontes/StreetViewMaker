@@ -161,8 +161,8 @@ Recupera detalhes sobre uma foto no Street View.
 @param {String} token - o token de acesso OAuth 2.0
 @param {String} photoId - ID de uma foto
 */
-function getPhoto(token, photoId){
-   const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}`;
+function getPhotoInstance(token, photoId){
+   const url = `https://streetviewpublish.googleapis.com/v1/photo/${photoId}?view=INCLUDE_DOWNLOAD_URL`;
    return new Promise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
