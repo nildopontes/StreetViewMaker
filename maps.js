@@ -164,8 +164,8 @@ function addPhoto(idPhoto, lat, lng, photoName){
       "photoId": idPhoto,
       "name": photoName,
       "latLng": [lat, lng],
-      "thumbnail": "";
-      "download": "";
+      "thumbnail": "",
+      "download": "",
       "connections": []
    };
    project.photos.push(photo);
