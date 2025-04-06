@@ -71,6 +71,7 @@ function addMarker(lat, lng, id, name){
          hideMenu();
       };
       $('photoConnections').onclick = () => {
+         if(project.photos.length == 1) return;
          let items = '';
          project.photos.map(p => {
             if(p.photoId != t.target.data && haversineDistance(getCoordinates(p.photoId), getCoordinates(t.target.data)) < 10) items += `<div class="item"><input type="checkbox" onclick="checkboxClick(this.id, '${t.target.data}')" id="${p.photoId}" ${p.connections.includes(t.target.data) ? 'checked' : ''}/><label for="${p.photoId}">${p.name}</label></div>`;
