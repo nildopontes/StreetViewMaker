@@ -44,8 +44,9 @@ function addMarker(lat, lng, id, name){
       position: { lat: lat, lng: lng },
       title: name
    });
-   marker.addEventListener('click', e => { // Adicionar a visualização da miniatura da foto ao clicar no marker (falta baixar a foto)
+   marker.addEventListener('click', e => {
       if(getPhoto(id).thumbnail == ''){
+         showLoading();
          getToken().then(t => {
             getPhotoInstance(t, id).then(p => {
                getPhoto(id).thumbnail = p.thumbnailUrl;
