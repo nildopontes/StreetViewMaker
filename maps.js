@@ -45,6 +45,18 @@ function addMarker(lat, lng, id, name){
       title: name
    });
    marker.addEventListener('click', e => { // Adicionar a visualização da miniatura da foto ao clicar no marker (falta baixar a foto)
+      if(getPhoto(id).thumbnail == ''){
+         getToken().then(t => {
+            getPhotoInstance(t, id).then(p => {
+               getPhoto(id).thumbnail = p.thumbnailUrl;
+               getPhoto(id).download = p.downloadUrl;
+               $('thumbnail').innerHTML = `<span onclick="hideThumbnail()">✖</span><img src="${p.thumbnailUrl}" onload="hideLoading()">`;
+               updateFile(t, JSON.stringify(db), db.idOnDrive);
+            });
+         }).catch(() => alertRedir());
+      }else{
+         $('thumbnail').innerHTML = `<span onclick="hideThumbnail()">✖</span><img src="${getPhoto(id).thumbnail}" onload="hideLoading()">`;
+      }
       $('mask').style.display = 'block';
       $('thumbnail').style.display = 'block';
    });
