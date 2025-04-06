@@ -1,4 +1,4 @@
-var db, map, markers = [], lines = [];
+var db, map, markers = {}, lines = [];
 function initMap(){
    map = new google.maps.Map($('workspace'), {
       center: { lat: -9.598392783313042, lng: -35.73571500947498 },
@@ -44,8 +44,7 @@ function addMarker(lat, lng, id, name){
       position: { lat: lat, lng: lng },
       title: name
    });
-   marker.data = id;
-   marker.addEventListener('click', e => { // Adicionar a vizualização da miniatura da foto ao clicar no marker
+   marker.addEventListener('click', e => { // Adicionar a visualização da miniatura da foto ao clicar no marker (falta baixar a foto)
       $('mask').style.display = 'block';
       $('thumbnail').style.display = 'block';
    });
@@ -74,21 +73,14 @@ function addMarker(lat, lng, id, name){
       $('menu').style.top = t.clientY + 'px';
       t.stopPropagation();
    });
-   markers.push(marker);
+   markers[id] = [marker, null];
    marker.setMap(map);
 }
 function removeMarker(data){
-   let i;
-   if((i = markers.findIndex(m => m.data == data)) > -1){
-      markers[i].map = null;
-      markers.splice(i, 1);
-   }
+   delete markers[data];
 }
 function renameMarker(data, newName){
-   let i;
-   if((i = markers.findIndex(m => m.data == data)) > -1){
-      markers[i].title = newName;
-   }
+   markers[data][0].title = newName;
 }
 function addLine(lat, lng, id1, id2){
    let i;
