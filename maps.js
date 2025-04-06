@@ -46,7 +46,8 @@ function addMarker(lat, lng, id, name){
    });
    marker.data = id;
    marker.addEventListener('click', e => { // Adicionar a vizualização da miniatura da foto ao clicar no marker
-      
+      $('mask').style.display = 'block';
+      $('thumbnail').style.display = 'block';
    });
    marker.addEventListener('contextmenu', t => {
       $('photoTrash').onclick = () => {
