@@ -88,6 +88,7 @@ function addMarker(lat, lng, id, name){
       $('menu').style.display = 'block';
       t.stopPropagation();
    });
+   marker.data = id;
    markers[id] = marker;
    marker.setMap(map);
 }
