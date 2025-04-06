@@ -84,16 +84,17 @@ function addMarker(lat, lng, id, name){
       $('mask').style.display = 'block';
       $('menu').style.left = t.clientX + 'px';
       $('menu').style.top = t.clientY + 'px';
+      $('menu').style.display = 'block';
       t.stopPropagation();
    });
-   markers[id] = [marker, null];
+   markers[id] = marker;
    marker.setMap(map);
 }
 function removeMarker(data){
    delete markers[data];
 }
 function renameMarker(data, newName){
-   markers[data][0].title = newName;
+   markers[data].title = newName;
 }
 function addLine(lat, lng, id1, id2){
    let i;
