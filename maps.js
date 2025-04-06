@@ -118,6 +118,10 @@ function removeLine(id1, id2){
       lines.splice(i, 1);
    }
 }
+function hideThumbnail(){
+   $('mask').style.display = 'none';
+   $('thumbnail').style.display = 'none';
+}
 function showLoading(){
    $('loading').style.display = 'block';
 }

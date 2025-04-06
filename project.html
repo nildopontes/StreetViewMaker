@@ -75,6 +75,7 @@
             width:120px;
             height:100px;
             background:white;
+            display:none;
          }
          #submenu{
             position:absolute;
@@ -84,6 +85,14 @@
             height:auto;
             background:white;
             display:none;
+         }
+         #thumbnail{
+            position:absolute;
+            top:0;
+            left:0;
+            width:80vw;
+            height:auto;
+            background:white;
          }
          .item{
             width:100%;
@@ -161,6 +170,10 @@
             <div class="item" onclick="hideMenu()">← Voltar</div>
          </div>
          <div id="submenu">
+         <div id="tumbnail">
+            <span onclick="hideThumbnail()">✖</span>
+            <img src="https://lh3.googleusercontent.com/gpms-cs-s/AIMqDu2Bf5EYQOJc-1YxAW1zIaIG8Ay8ruO3qqVB5oJ_XkV9LrKZ7mz_MavrvJlkoF4S8QaJfMAflT1pDl83VK0Ntrv03nty8GJ81eASKzn3LNjNCQ5Cxq7MiCl90KclK_VItVx1Mw3C9UjfwPYc=w512-h256-k-no">
+         </div>
          </div>
       </div>
    </body>
