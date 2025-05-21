@@ -190,7 +190,7 @@ function addPhoto(idPhoto, lat, lng, photoName){
 function listProjects(){
    let projects = '';
    db.projects.map(x => {
-      projects += `<div class="project"><div class="name" onclick="window.location.href = 'project.html?p=${encodeURIComponent(x.name)}'">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span></div></div>`;
+      projects += `<div class="project"><div class="name" onclick="window.location.href = 'project.html?p=${encodeURIComponent(x.name)}'">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span>&nbsp;&nbsp;&nbsp;<span class="get">⭳</span></div></div>`;
    });
    $('projects').innerHTML = projects;
 }
