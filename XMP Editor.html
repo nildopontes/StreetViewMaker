@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="style.css">
+      <link rel="icon" href="favicon.png" type="image/png">
+      <style>
+         #xmp-code{
+            display:block;
+            width:96%;
+            margin:2%;
+            height:400px;
+            box-sizing:border-box;
+            text-wrap:nowrap;
+            resize:none;
+         }
+      </style>
+      <script src="xmp.js"></script>
+      <script>
+         var buffer;
+         function handleFileSelect(){
+            var file = files.files[0];
+            var reader = new FileReader();
+            reader.onloadend = e => {
+                buffer = e.target.result;
+                var xmpStr = jpgReadXmp(e.target.result);
+                document.getElementById('xmp-code').value = xmpStr;
+            };
+            reader.readAsArrayBuffer(file);
+         }
+         function download(arrBf){
+            const blobUrl = URL.createObjectURL(new Blob([arrBf], {type: "image/jpeg"}));
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = 'image.jpg';
+            document.body.appendChild(link);
+            link.dispatchEvent(
+              new MouseEvent('click', { 
+                bubbles: true, 
+                cancelable: true, 
+                view: window 
+              })
+            );
+            document.body.removeChild(link);
+         }
+         function save(){
+            let newBuffer = jpgWriteXmp(buffer, document.getElementById('xmp-code').value);
+            download(newBuffer);
+         }
+         function resetXMP(){
+         }
+      </script>
+      <title>XMP Editor</title>
+   </head>
+   <body>
+      <header>
+         <div id="icon">
+            <img src="icon.png" alt="Icon">
+         </div>
+         <span>Editor de metadados XMP</span>
+      </header>
+      <input type="file" id="files" accept="image/jpeg" onchange="handleFileSelect()"/>
+      <textarea id="xmp-code"></textarea>
+      <input type="button" value="Salvar alterações" onclick="save()">
+      <input type="button" value="Resetar metadados" onclick="resetXMP()">
+   </body>
+</html>
