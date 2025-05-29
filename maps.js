@@ -44,7 +44,7 @@ function addMarker(lat, lng, id, name){
       position: { lat: lat, lng: lng },
       title: name
    });
-   marker.addEventListener('click', e => {
+   marker.addEventListener('gmp-click', e => {
       if(getPhoto(id).thumbnail == ''){
          showLoading();
          getToken().then(t => {
@@ -93,6 +93,7 @@ function addMarker(lat, lng, id, name){
    marker.setMap(map);
 }
 function removeMarker(data){
+   markers[data].setMap(null);
    delete markers[data];
 }
 function renameMarker(data, newName){
@@ -190,7 +191,7 @@ function addPhoto(idPhoto, lat, lng, photoName){
 function listProjects(){
    let projects = '';
    db.projects.map(x => {
-      projects += `<div class="project"><div class="name" onclick="window.location.href = 'project.html?p=${encodeURIComponent(x.name)}'">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')">✖</span>&nbsp;&nbsp;&nbsp;<span class="get">⭳</span></div></div>`;
+      projects += `<div class="project"><div class="name" onclick="window.location.href = 'project.html?p=${encodeURIComponent(x.name)}'">${x.name}</div><div class="btns"><span class="edit" onclick="renameProject('${x.name}')" title="Editar">✎</span>&nbsp;&nbsp;&nbsp;<span class="trash" onclick="removeProject('${x.name}')" title="Excluir">✖</span>&nbsp;&nbsp;&nbsp;<span class="get" title="Download">⭳</span></div></div>`;
    });
    $('projects').innerHTML = projects;
 }
@@ -231,7 +232,7 @@ function removePhoto(photoId){
             if(r === true){
                project.photos.splice(photoIndex(photoId), 1);
                updateFile(t, JSON.stringify(db), db.idOnDrive);
-               removeMarker(photoId);
+               removeMarker(photoId); // Não está funcionando
                alert('Foto removida com sucesso.');
             }
          }).catch(e => alert(`A foto foi encontrada mas ocorreu um erro ao tentar apagar. ${e}`));
