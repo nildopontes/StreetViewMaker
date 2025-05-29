@@ -23,14 +23,14 @@
             var file = files.files[0];
             var reader = new FileReader();
             reader.onloadend = e => {
-                buffer = e.target.result;
-                var xmpStr = jpgReadXmp(e.target.result);
+                buffer = new Uint8Array(e.target.result);
+                var xmpStr = readXMP(buffer);
                 document.getElementById('xmp-code').value = xmpStr;
             };
             reader.readAsArrayBuffer(file);
          }
-         function download(arrBf){
-            const blobUrl = URL.createObjectURL(new Blob([arrBf], {type: "image/jpeg"}));
+         function download(uint8arr){
+            const blobUrl = URL.createObjectURL(new Blob([uint8arr], {type: "image/jpeg"}));
             const link = document.createElement('a');
             link.href = blobUrl;
             link.download = 'image.jpg';
@@ -45,10 +45,11 @@
             document.body.removeChild(link);
          }
          function save(){
-            let newBuffer = jpgWriteXmp(buffer, document.getElementById('xmp-code').value);
+            let newBuffer = writeXMP(buffer, document.getElementById('xmp-code').value);
             download(newBuffer);
          }
          function resetXMP(){
+            document.getElementById('xmp-code').value = newXMP();
          }
       </script>
       <title>XMP Editor</title>
