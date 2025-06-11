@@ -4,6 +4,6 @@ Crie um tour virtual para o Google Street View de forma simples e sem cadastro. 
 
 ![](image1.png)
 
-![](images2.png)
+![](image22.png)
 
-![](images3.png)
+![](image3.png)
