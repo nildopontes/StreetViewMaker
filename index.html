@@ -3,14 +3,14 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="style.css">
-      <link rel="icon" href="favicon.png" type="image/png">
+      <link rel="stylesheet" href="css/style.css">
+      <link rel="icon" href="img/favicon.png" type="image/png">
       <script>
          if(sessionStorage.getItem('secureToken') !== null && parseInt(Date.now()/1000, 10) < parseInt(sessionStorage.getItem('expireToken'), 10)){
             window.location.href = 'projects.html';
          }
       </script>
-      <script src="auth.js"></script>
+      <script src="js/auth.js"></script>
       <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
       <title>StreetViewMaker - Crie tours incríveis no Street View</title>
       <style>
@@ -26,14 +26,14 @@
    <body>
       <header>
          <div id="icon">
-            <img src="icon.png" alt="Icon">
+            <img src="img/icon.png" alt="Icon">
          </div>
          <span>StreetViewMaker</span>
       </header>
       <div class="card">
          <h1>Antes de começar...</h1>
          <p>Use o botão abaixo para se autenticar com sua conta Google.</p>
-         <img src="btn_google_signin.png" alt="google signin button" id="signin" onclick="newToken()">
+         <img src="img/btn_google_signin.png" alt="google signin button" id="signin" onclick="newToken()">
          <p>
             Este aplicativo permite enviar fotos 360° para o Street View e criar conexões entre elas.<br>
             Suas fotos precisam ter os metadados descritos em <a href="https://developers.google.com/streetview/spherical-metadata?hl=pt-br">Metadados XMP de Photo Spheres</a> para publicação. Além disso deve estar no formato JPEG, possuir no mínimo 7.5MP (3840 x 1920 px), ter no máximo 75MB e estar na proporção 2:1.<br>
@@ -42,7 +42,7 @@
          <p>
       </div>
       <footer>
-         Source Code: <a href="https://github.com/nildopontes/Street-View-Publish-Client">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>
+         Source Code: <a href="https://github.com/nildopontes/StreetViewMaker">Github</a> - Made by <a href="https://github.com/nildopontes">nildopontes</a>
       </footer>
    </body>
 </html>
