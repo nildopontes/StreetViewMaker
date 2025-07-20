@@ -14,8 +14,8 @@
       <script>
          var project;
          document.addEventListener('visibilitychange', () => { // acionar esta ação também quando o usuário tentar sair da página
-            if(document.visibilityState === 'hidden'){
-               project.center = map.getCenter().toJSON();
+            if(document.visibilityState === 'hidden'){         // Adicionar botão de sair
+               project.center = map.getCenter().toJSON();      // Incluir um contexto para o editor de XMP
                project.zoom = map.getZoom();
                getToken().then(t => updateFile(t, JSON.stringify(db), db.idOnDrive)).catch(() => alertRedir());
             }
@@ -150,6 +150,7 @@
             <img src="icon.png" alt="Icon">
          </div>
          <span>StreetViewMaker</span>
+         <span id="moreOptions">≡</span>
       </header>
       <div class="card">
          <h1 id="projectName"></h1>
